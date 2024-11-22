@@ -1,6 +1,9 @@
 #
-- Grupo de 4 pessoas (1 a mais ou a menos é tranquilo)
-- Personalização livre com html, css, javascript
+- Dupla: Mateus Juan & Eliel Peixoto
+- Personalização livre com html, css, javascript:
+  <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/HTML5_logo_and_wordmark.svg/768px-HTML5_logo_and_wordmark.svg.png" width="65" height="65"/>
+  <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/CSS3_logo_and_wordmark.svg/1200px-CSS3_logo_and_wordmark.svg.png" width="55" height="65"/>
+  <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Javascript_badge.svg/946px-Javascript_badge.svg.png" width="65" height="65"/>
 - Utilizar flask 
 - Usar sqlite ou sqlalchemy
 - 4 tabelas de entidades simples e 2 de negócio
