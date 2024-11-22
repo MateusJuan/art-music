@@ -1,0 +1,42 @@
+body{
+    font-family: 'Times New Roman', Times, serif;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    background-color:beige;
+    color: black;
+}
+div{
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    border-radius: 15px;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%,50%);
+    padding: 80px;
+    text-align: center;
+    width: 250px;
+}
+input{
+    background-color: rgba(0, 0, 0, 0.9);
+    border-radius: 15px;
+    border: none;
+    padding: 5px;
+    outline: none;
+    width: 200px;
+    color: white;
+}
+input::placeholder{
+    color: white;
+}
+#submit{
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #746b60;
+    width: 210px;
+}
+a{
+    text-decoration: none;
+    color: black;
+}
