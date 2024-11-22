@@ -15,3 +15,32 @@ class Usuario(UserMixin, db.Model):
     nickname = db.Column(db.String(150), unique=True, nullable=False)
     senha = db.Column(db.String(150), nullable=False)
 
+@app.route('/')
+def home():
+    return render_template('index.html', name=current_user.nickname)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        nickname = request.form['nickaname']
+        senha = request.form['senha']
+        usuario = Usuario.query.filter_by(nickname=nickname).first()
+
+        if usuario and usuario.senha == senha:  
+            login_user(usuario)
+            flash("Login realizado com sucesso!", "success")
+            return redirect(url_for('home'))
+        else:
+            flash("Credenciais incorretas. Tente novamente.", "danger")
+    
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
+if __name__ == "__main__":
+    db.create_all()  # Criação das tabelas no banco de dados
+    app.run(debug=True)
