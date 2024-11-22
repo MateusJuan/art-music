@@ -1,3 +1,4 @@
+/*FAZER COM PYTHON:*/
 const partiturasPage = {
     selecionar: function(genre) {
         let conteudo = '';

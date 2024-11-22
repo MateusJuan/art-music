@@ -1,3 +1,4 @@
+/*MATÉM COMO TÁ:*/
 function pesquisar(){
     window.alert("Pesquisando...");
 }
@@ -14,6 +15,9 @@ function goToLink(value){
 }
 const nome = "Mateus Juan";
 document.getElementById("nome").textContent = nome;
+/*/////////////////////////////////////////////*/
+
+
 
 /*////////////////////////////////////////////////*/
 
@@ -32,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 /////////////////////////////////////////////////////////////////
-
+/*FAZER COM PYTHON:*/
 function selecionar(genre) {
     let conteudo = '';
     if (genre === 'todos') {
@@ -83,8 +87,11 @@ function selecionar(genre) {
 
     document.getElementById('conteudo-selecionado').innerHTML = conteudo;
 }
+/*/////////////////////////////////////////////////////////////////////////////*/
+
 
 ////////////////////////////////////////////////////////////////////////////////
+/*FAZER COM PYTHON:*/
 
 function selecionar(genre) {
     let conteudo = '';
@@ -130,6 +137,9 @@ function selecionar(genre) {
 
     document.getElementById('conteudo-selecionado1').innerHTML = conteudo;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+
 
 //////////////////////////////////////////////////////////////////////////////
 /*function goToLink(tipos){

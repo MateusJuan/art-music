@@ -1,3 +1,4 @@
+/*FAZER COM PYTHON:*/
 const cifrasPage = {
     selecionar: function(genre) {
         let conteudo = '';
