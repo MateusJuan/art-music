@@ -1,4 +1,19 @@
-/*FAZER COM PYTHON:*/
+function pesquisar(){
+    alert("Pesquisando...");
+}
+
+function goToLink(value){
+    const links = {
+        '0': 'index.html',
+        '1': 'https://www.friv.com',
+        '2': 'samba.html',
+        '3': 'classica.html'
+    };
+    if (links[value]) {
+        window.location.href = links[value];
+    }
+}
+
 const cifrasPage = {
     selecionar: function(genre) {
         let conteudo = '';
@@ -24,11 +39,7 @@ const cifrasPage = {
                     <tbody>
                         <tr>
                             <td><a href="vocalLivreC.html">Vocal Livre</a></td>
-                            <td id='qtd_vL_c'></td>
-                        </tr>
-                        <tr>
-                            <td><a href="novotomC.html">Novo Tom</a></td>
-                            <td id='qtd_nT_c'></td>
+                            <td id="qtd_vL_c"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -41,7 +52,6 @@ const cifrasPage = {
                 <p>Aqui está o conteúdo de músicas de rock que você selecionou.</p>
             `;
         }
-
         document.getElementById('conteudo-selecionado1').innerHTML = conteudo;
     }
 };

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cifras</title>
+</head>
+<body>
+    <h1>Cifras Disponíveis</h1>
+    <ul>
+        {% for genero, cifras in cifras_por_genero.items() %}
+        <li>
+            <h2>{{ genero }}</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Banda</th>
+                        <th>Quantidade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cifra in cifras %}
+                    <tr>
+                        <td><a href="{{ cifra.banda|lower|replace(' ', '') }}.html">{{ cifra.banda }}</a></td>
+                        <td>{{ cifra.quantidade }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
