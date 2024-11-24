@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="logins.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='logins.css') }}">
     <title>Criar Conta</title>
 </head>
 <body>
     <div>
-        <form action="criarconta.php" method="POST">
-            <p>Criar Cconta:</p>
+        <form action="/criarconta" method="POST">
+            <p>Criar Conta:</p>
             <input type="text" name="nome" id="nome" required placeholder="Nome">
             <br><br>
             <input type="email" name="email" id="email" required placeholder="exemplo@gmail.com">

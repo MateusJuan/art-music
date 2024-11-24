@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <title>Gospel/Religioso</title>
+</head>
+<body>
+    <h2>Gospel/Religioso</h2>
+    <table>
+        <thead>
+            <tr>
+                <td>Banda/Grupo</td>
+                <td>QTD</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for banda in dados['conteudos']['gospel'] %}
+                <tr>
+                    <td>{{ banda['banda'] }}</td>
+                    <td>{{ banda['qtd'] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

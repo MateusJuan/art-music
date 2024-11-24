@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="logins.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='logins.css') }}">
     <title>Login</title>
 </head>
 <body>
     <div>
         <h1>Login</h1>
-        <form action="login.php" method="get">
+        <form action="/login" method="get">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
             <br><br>
