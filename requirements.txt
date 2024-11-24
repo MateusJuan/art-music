@@ -9,7 +9,7 @@ certifi==2024.8.30
 click==8.1.7
 colorama==0.4.6
 deprecation==2.1.0
-Flask==3.0.3
+Flask==3.1.0
 Flask-Login==0.6.3
 Flask-SQLAlchemy==3.1.1
 frozenlist==1.5.0
@@ -27,6 +27,7 @@ itsdangerous==2.2.0
 Jinja2==3.1.4
 MarkupSafe==3.0.2
 multidict==6.1.0
+mysqlclient==2.2.6
 packaging==24.2
 postgrest==0.18.0
 propcache==0.2.0

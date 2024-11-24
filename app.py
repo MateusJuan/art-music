@@ -1,50 +1,36 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cifras.db'
-app.config['SECRET_KEY'] = 'minha_chave_secreta'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:Mcmidori3208@localhost/art_music'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-class Cifra(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    genero = db.Column(db.String(50), nullable=False)
-    banda = db.Column(db.String(150), nullable=False)
-    quantidade = db.Column(db.Integer, nullable=False)
-
-    def __repr__(self):
-        return f"<Cifra {self.banda}>"
-
-@app.route('/cifras')
-def cifras():
-    cifras = Cifra.query.all()
-
-    cifras_por_genero = {}
-    for cifra in cifras:
-        if cifra.genero not in cifras_por_genero:
-            cifras_por_genero[cifra.genero] = []
-        cifras_por_genero[cifra.genero].append(cifra)
-
-    return render_template('cifras.html', cifras_por_genero=cifras_por_genero)
-
-@app.route('/adicionar_cifra', methods=['GET', 'POST'])
-def adicionar_cifra():
-    if request.method == 'POST':
-        genero = request.form['genero']
-        banda = request.form['banda']
-        quantidade = int(request.form['quantidade'])
-        
-        nova_cifra = Cifra(genero=genero, banda=banda, quantidade=quantidade)
-        db.session.add(nova_cifra)
+def init_db():
+    with app.app_context():
+        sql = """
+        CREATE DATABASE IF NOT EXISTS art_music;
+        USE art_music;
+        CREATE TABLE IF NOT EXISTS users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(100) NOT NULL,
+            email VARCHAR(100) NOT NULL,
+            password VARCHAR(255) NOT NULL
+        );
+        """
+        db.session.execute(text(sql))
         db.session.commit()
 
-        flash("Cifra adicionada com sucesso!", "success")
-        return redirect(url_for('cifras'))
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-    return render_template('adicionar_cifra.html')
-
-with app.app_context():
-    db.create_all()
+@app.route('/criarconta')
+def criar_conta():
+    return render_template('criarconta.html')
 
 if __name__ == '__main__':
+    init_db()  
     app.run(debug=True)

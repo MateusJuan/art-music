@@ -1,36 +1,11 @@
-<!--
-VERIFICAÇÃO DE CONTA
-<?php
-session_start();
-$host = "localhost";
-$usuario = "root";
-$senha = "";
-$banco = "artmusic";
-$conexao = new mysqli($host, $usuario, $senha, $banco);
-
-if ($conexao->connect_error) {
-    die("Conexão falhou: " . $conexao->connect_error);
-}
-
-// Verifica se o usuário está conectado
-if (!isset($_SESSION['usuario_nome'])) {
-    header("Location: login.html");
-    exit;
-}
-
-$nome = $_SESSION['usuario_nome'];
-?>-->
-
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <title>Art`Music</title>
-    
 </head>
 <body>
     <ul class="abas_ul">
@@ -57,7 +32,8 @@ $nome = $_SESSION['usuario_nome'];
         </a>
         <a href="criarconta.html">
             <div class="perfil">
-                <li id="nome"><?php echo htmlspecialchars($nome); ?></li>
+                <!-- Exibe o nome do usuário logado -->
+                <li id="nome">{{ nome }}</li>
                 <span class="material-symbols-outlined">account_circle</span>
             </div>
         </a>
