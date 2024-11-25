@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <title>Art`Music</title>
 </head>
 <body>
     <ul class="abas_ul">
-        <a href="/" class="abas_a" id="abas_a1">
+        <a href="partituras.html" class="abas_a" id="abas_a1">
             <li class="abas">Partituras</li>
         </a>
-        <a href="/cifras" class="abas_a" id="abas_a1">
+        <a href="" class="abas_a" id="abas_a1">
             <li class="abas">Cifras</li>
         </a>
         <a href="" class="abas_a" id="abas_a1">
@@ -27,12 +27,18 @@
             <ul id="sugestoes" class="sugestoes"></ul>
         </div>
 
-        <a href="minhas_listas.html">
+        <a href="">
             <li class="abas">Minhas Listas</li>
         </a>
-        <a href="criarconta.html">
+        <a href="{{ url_for('login') }}">
             <div class="perfil">
                 <li id="nome">{{ nome }}</li>
+                <span class="material-symbols-outlined">account_circle</span>
+            </div>
+        </a>
+        <a href="{{ url_for('criar_conta') }}">
+        <div class="perfil">
+                <li id="nome">Criar Conta</li>
                 <span class="material-symbols-outlined">account_circle</span>
             </div>
         </a>

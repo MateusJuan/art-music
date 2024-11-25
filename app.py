@@ -1,72 +1,75 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for, session
+from models import init_db, inserir_usuario, buscar_usuario, deletar_usuario
+import os
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
+
+init_db()
 
 @app.route('/')
-def index():
-    dados = {
-        'tipos': ['Todos', 'Gospel/Religioso', 'Rock', 'Pagode', 'Samba', 'Clássica'],
-        'conteudos': {
-            'gospel': [
-                {'banda': 'Vocal Livre', 'qtd': 10},
-                {'banda': 'Novo Tom', 'qtd': 15}
-            ],
-            'rock': [
-                {'banda': 'AC/DC', 'qtd': 20},
-                {'banda': 'Queen', 'qtd': 18}
-            ]
-        },
-        'nome': 'Usuário Logado' 
-    }
-    return render_template('index.html', dados=dados)
+def home():
+    if 'nome' in session:
+        nome = session['nome']
+    else:
+        nome = None
+    return render_template('index.html', nome=nome)
 
-@app.route('/cifras')
-def cifras():
-    cifras_por_genero = {
-        'Rock': [
-            {'banda': 'AC/DC', 'quantidade': 20},
-            {'banda': 'Queen', 'quantidade': 18}
-        ],
-        'Gospel': [
-            {'banda': 'Vocal Livre', 'quantidade': 10},
-            {'banda': 'Novo Tom', 'quantidade': 15}
-        ]
-    }
-    return render_template('cifras.html', cifras_por_genero=cifras_por_genero)
+@app.route('/criarconta', methods=['GET', 'POST'])
+def criar_conta():
+    if request.method == 'POST':
+        nome = request.form['nome']
+        email = request.form['email']
+        senha = request.form['senha']
 
-@app.route('/criarconta')
-def criarconta():
+        resultado = inserir_usuario(nome, email, senha)
+        if resultado:
+            return f"Erro ao criar conta: {resultado}"
+
+        return redirect(url_for('home'))
     return render_template('criarconta.html')
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        senha = request.form['senha']
+
+        usuario = buscar_usuario(email, senha)
+        if usuario:
+            session['nome'] = usuario['nome']
+            session['email'] = usuario['email']
+            return redirect(url_for('home'))
+        else:
+            return render_template('login.html', erro="Login inválido. Verifique suas credenciais.")
     return render_template('login.html')
 
-@app.route('/gospel')
-def gospel():
-    dados = {
-        'tipos': ['Todos', 'Gospel/Religioso', 'Rock', 'Pagode', 'Samba', 'Clássica'],
-        'conteudos': {
-            'gospel': [
-                {'banda': 'Vocal Livre', 'qtd': 10},
-                {'banda': 'Novo Tom', 'qtd': 15}
-            ]
-        }
-    }
-    return render_template('gospel.html', dados=dados)
 
-@app.route('/rock')
-def rock():
-    dados = {
-        'tipos': ['Todos', 'Gospel/Religioso', 'Rock', 'Pagode', 'Samba', 'Clássica'],
-        'conteudos': {
-            'rock': [
-                {'banda': 'AC/DC', 'qtd': 20},
-                {'banda': 'Queen', 'qtd': 18}
-            ]
-        }
-    }
-    return render_template('rock.html', dados=dados)
+
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('home'))
+
+
+@app.route('/apagarconta', methods=['GET', 'POST'])
+def apagar_conta():
+    if 'email' not in session:
+        return redirect(url_for('login'))
+    
+    if request.method == 'POST':
+        email = session['email']
+        
+        resultado = deletar_usuario(email)
+        if resultado:
+            print(f"Resultado: {resultado}")
+            return f"Erro ao apagar a conta: {resultado}"
+        
+        session.clear()
+        return redirect(url_for('home'))
+    
+    return render_template('apagarconta.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

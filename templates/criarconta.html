@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='logins.css') }}">
-    <title>Criar Conta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/logins.css') }}">
+    <title>Criar Conta</title> 
 </head>
 <body>
     <div>
-        <form action="/criarconta" method="POST">
+        <form action="{{ url_for('criar_conta') }}" method="POST">
             <p>Criar Conta:</p>
             <input type="text" name="nome" id="nome" required placeholder="Nome">
             <br><br>
@@ -16,7 +16,7 @@
             <br><br>
             <input type="password" name="senha" id="senha" required placeholder="********">
             <br><br>
-            <input type="submit" name="submit" id="submit">
+            <input type="submit" name="submit" id="submit" value="Criar Conta">
         </form>
     </div>
 </body>
