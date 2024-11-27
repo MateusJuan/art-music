@@ -7,11 +7,17 @@
     {% if nome %}
     <title>Perfil de {{ nome }}</title>
     {% else %}
+    <title>Perfil do Usuário</title>
+    {% endif %}
 </head>
 <body>
     <h1>Perfil do Usuário</h1>
-    <p><strong>Nome:</strong> {{ nome }}</p>
-    <p><strong>Email:</strong> {{ email }}</p>
+    {% if nome %}
+        <p><strong>Nome:</strong> {{ nome }}</p>
+        <p><strong>Email:</strong> {{ email }}</p>
+    {% else %}
+        <p>Usuário não está logado.</p>
+    {% endif %}
     <a href="{{ url_for('home') }}">Voltar para a home</a>
 </body>
 </html>
