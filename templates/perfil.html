@@ -18,6 +18,11 @@
     {% else %}
         <p>Usuário não está logado.</p>
     {% endif %}
+
+    <a href="{{ url_for('logout')}}">
+        <button id="submit">Sair da Conta</button>
+    </a><br>
+
     <a href="{{ url_for('home') }}">Voltar para a home</a>
 </body>
 </html>

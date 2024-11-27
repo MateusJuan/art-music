@@ -35,6 +35,9 @@ input::placeholder{
     cursor: pointer;
     background-color: #746b60;
     width: 210px;
+    border-radius: 15px;
+    border:none;
+    padding: 5px;
 }
 a{
     text-decoration: none;
