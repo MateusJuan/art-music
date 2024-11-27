@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/perfil.css') }}">
+    <title>Perfil do Usuário</title>
+</head>
+<body>
+    <h1>Perfil do Usuário</h1>
+    <p><strong>Nome:</strong> {{ nome }}</p>
+    <p><strong>Email:</strong> {{ email }}</p>
+    <a href="{{ url_for('home') }}">Voltar para a home</a>
+</body>
+</html>
