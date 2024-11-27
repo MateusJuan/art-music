@@ -9,10 +9,10 @@ init_db()
 
 @app.route('/')
 def home():
-    if 'nome' in session:
-        nome = session['nome']
-    else:
-        nome = None
+    if 'nome' not in session:
+        return redirect(url_for('login'))  # Redireciona para a página de login se não estiver logado
+    
+    nome = session['nome']
     return render_template('index.html', nome=nome)
 
 @app.route('/criarconta', methods=['GET', 'POST'])
@@ -44,14 +44,22 @@ def login():
             return render_template('login.html', erro="Login inválido. Verifique suas credenciais.")
     return render_template('login.html')
 
+@app.route('/perfil')
+def perfil():
+    # Verifica se o usuário está logado
+    if 'nome' not in session:
+        return redirect(url_for('login'))
+    
+    nome = session['nome']
+    email = session['email']
 
-
+    # Aqui você pode adicionar mais informações do usuário se necessário
+    return render_template('perfil.html', nome=nome, email=email)
 
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('home'))
-
 
 @app.route('/apagarconta', methods=['GET', 'POST'])
 def apagar_conta():
