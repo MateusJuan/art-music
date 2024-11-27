@@ -8,7 +8,7 @@
 </head>
 <body>
     <div>
-        <form action="{{ url_for('criar_conta') }}" method="POST">
+        <form action="{{ url_for('criar_conta') }}" method="POST" enctype="multipart/form-data">
             <p>Criar Conta:</p>
             <input type="text" name="nome" id="nome" required placeholder="Nome">
             <br><br>
@@ -16,6 +16,11 @@
             <br><br>
             <input type="password" name="senha" id="senha" required placeholder="********">
             <br><br>
+
+            <label for="foto_perfil">Foto de Perfil (opcional):</label>
+            <input type="file" name="foto_perfil" id="foto_perfil">
+            <br><br>
+
             <input type="submit" name="submit" id="submit" value="Criar Conta">
         </form>
     </div>

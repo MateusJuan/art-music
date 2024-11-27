@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/logins.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     {% if nome %}
     <title>Perfil de {{ nome }}</title>
     {% else %}
@@ -12,14 +12,28 @@
 </head>
 <body>
     <h1>Perfil do Usuário</h1>
+    {% if foto_perfil %}
+    <p><strong>Foto de Perfil:</strong></p>
+    <img src="{{ url_for('static', filename=foto_perfil) }}" alt="Foto de Perfil" width="150" class="foto_perfil">
+    {% else %}
+    <p>Você ainda não tem uma foto de perfil.</p>
+    {% endif %}
+    <form action="{{ url_for('upload_foto') }}" method="POST" enctype="multipart/form-data">
+    <label for="foto_perfil">Escolha uma foto de perfil:</label><br>
+    <input type="file" name="foto_perfil" accept="image/*">
+    <button type="submit">Enviar Foto</button>
+</form>
+
     {% if nome %}
         <p><strong>Nome:</strong> {{ nome }}</p>
         <p><strong>Email:</strong> {{ email }}</p>
+
+
     {% else %}
         <p>Usuário não está logado.</p>
     {% endif %}
 
-    <a href="{{ url_for('logout')}}">
+    <a href="{{ url_for('logout') }}">
         <button id="submit">Sair da Conta</button>
     </a><br>
 

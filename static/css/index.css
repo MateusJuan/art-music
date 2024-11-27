@@ -101,3 +101,18 @@
   .pages{
       text-align: left;
   }
+
+  .foto_perfil {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+}
+
+.foto_de_perfil{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+}

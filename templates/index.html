@@ -35,17 +35,23 @@
         <a href="{{ url_for('perfil') }}">
             <div class="perfil">
                 <li id="nome">{{ nome }}</li>
-                <span class="material-symbols-outlined">account_circle</span>
+                {% if foto_perfil %}
+                    <img src="{{ url_for('static', filename=foto_perfil) }}" alt="Foto de Perfil" class="foto_de_perfil">
+                {% else %}
+                    <span class="material-symbols-outlined">account_circle</span>
+                {% endif %}
             </div>
         </a>
-        {% elif not nome %}
+    {% elif not nome %}
         <a href="{{ url_for('login') }}">
             <div class="perfil">
                 <li id="nome">Login</li>
                 <span class="material-symbols-outlined">account_circle</span>
             </div>
         </a>
-        {% endif %}
+    {% endif %}
+    
+    
     </ul>
     <hr>
     <ul class="tipos_ul">

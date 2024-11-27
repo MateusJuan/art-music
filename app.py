@@ -1,19 +1,27 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from models import init_db, inserir_usuario, buscar_usuario, deletar_usuario
+from werkzeug.utils import secure_filename
+import sqlite3
 import os
+from models import init_db, inserir_usuario, deletar_usuario
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
 init_db()
 
+UPLOAD_FOLDER = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
 @app.route('/')
 def home():
     if 'nome' not in session:
-        return redirect(url_for('login'))  # Redireciona para a página de login se não estiver logado
+        return redirect(url_for('login'))
     
     nome = session['nome']
-    return render_template('index.html', nome=nome)
+    foto_perfil = session.get('foto_perfil', None)
+    return render_template('index.html', nome=nome, foto_perfil=foto_perfil)
 
 @app.route('/criarconta', methods=['GET', 'POST'])
 def criar_conta():
@@ -34,32 +42,42 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         senha = request.form['senha']
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM usuarios WHERE email = ? AND senha = ?", (email, senha))
+        usuario = cursor.fetchone()
+        conn.close()
 
-        usuario = buscar_usuario(email, senha)
         if usuario:
-            session['nome'] = usuario['nome']
-            session['email'] = usuario['email']
-            return redirect(url_for('home'))
+            session['email'] = email
+            session['nome'] = usuario[1]
+            session['foto_perfil'] = usuario[4]
+            return redirect(url_for('perfil'))
         else:
-            return render_template('login.html', erro="Login inválido. Verifique suas credenciais.")
+            return "Login falhou. Verifique suas credenciais."
+
     return render_template('login.html')
 
 @app.route('/perfil')
 def perfil():
-    # Verifica se o usuário está logado
-    if 'nome' not in session:
-        return redirect(url_for('login'))
-    
-    nome = session['nome']
-    email = session['email']
+    if 'email' in session:
+        email = session['email']
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT nome, email, foto_perfil FROM usuarios WHERE email = ?", (email,))
+        usuario = cursor.fetchone()
+        conn.close()
 
-    # Aqui você pode adicionar mais informações do usuário se necessário
-    return render_template('perfil.html', nome=nome, email=email)
+        if usuario:
+            return render_template('perfil.html', nome=usuario[0], email=usuario[1], foto_perfil=usuario[2])
+    return redirect(url_for('login'))
 
 @app.route('/logout')
 def logout():
-    session.clear()
-    return redirect(url_for('home'))
+    session.pop('email', None)
+    session.pop('nome', None)
+    session.pop('foto_perfil', None)
+    return redirect(url_for('login'))
 
 @app.route('/apagarconta', methods=['GET', 'POST'])
 def apagar_conta():
@@ -78,6 +96,29 @@ def apagar_conta():
         return redirect(url_for('home'))
     
     return render_template('apagarconta.html')
+
+@app.route('/upload_foto', methods=['POST'])
+def upload_foto():
+    if 'foto_perfil' not in request.files:
+        return "Nenhum arquivo enviado."
+
+    file = request.files['foto_perfil']
+    if file.filename == '':
+        return "Nenhuma imagem selecionada."
+
+    if file:
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute('''UPDATE usuarios SET foto_perfil = ? WHERE email = ?''', (f'uploads/{filename}', session['email']))
+        conn.commit()
+        conn.close()
+
+        session['foto_perfil'] = f'uploads/{filename}'
+        return redirect(url_for('perfil'))
 
 if __name__ == '__main__':
     app.run(debug=True)
