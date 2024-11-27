@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/perfil.css') }}">
-    <title>Perfil do Usuário</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/logins.css') }}">
+    {% if nome %}
+    <title>Perfil de {{ nome }}</title>
+    {% else %}
 </head>
 <body>
     <h1>Perfil do Usuário</h1>

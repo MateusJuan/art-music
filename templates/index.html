@@ -38,16 +38,10 @@
                 <span class="material-symbols-outlined">account_circle</span>
             </div>
         </a>
-        {% else %}
+        {% elif not nome %}
         <a href="{{ url_for('login') }}">
             <div class="perfil">
                 <li id="nome">Login</li>
-                <span class="material-symbols-outlined">account_circle</span>
-            </div>
-        </a>
-        <a href="{{ url_for('criar_conta') }}">
-            <div class="perfil">
-                <li id="nome">Criar Conta</li>
                 <span class="material-symbols-outlined">account_circle</span>
             </div>
         </a>
