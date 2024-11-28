@@ -1,13 +1,26 @@
+/*Modo CLaro*/
+:root{
+    --fundo_de_tela:rgb(236,235,233);
+    --botao_1:rgb(176,152,111);
+    --botao_2:rgb(107,84,56);
+    --texto_principal:rgb(69,67,66);
+    --texto_secundario:rgb(107,84,56);
+    --text_botao:rgb(236,235,233);
+    --texto_neuto_1:rgb(255,255,255);
+    --texto_neutro_2:rgb(0, 0, 0);
+}
+
+
 body{
     font-family: 'Times New Roman', Times, serif;
     align-items: center;
     text-align: center;
     justify-content: center;
-    background-color:beige;
-    color: black;
+    background-color:var(--fundo_de_tela);
+    color: var(--texto_neutro_2);
 }
 div{
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(255, 255, 255, 0.9);
     position: absolute;
     border-radius: 15px;
     top: 20%;
@@ -24,16 +37,16 @@ input{
     padding: 5px;
     outline: none;
     width: 200px;
-    color: white;
+    color:var(--texto_neuto_1);
 }
 input::placeholder{
-    color: white;
+    color: var(--texto_neuto_1);
 }
 #submit{
-    color: white;
+    color: var(--text_botao);
     font-weight: bold;
     cursor: pointer;
-    background-color: #746b60;
+    background-color: var(--botao_2);
     width: 210px;
     border-radius: 15px;
     border:none;
@@ -41,5 +54,5 @@ input::placeholder{
 }
 a{
     text-decoration: none;
-    color: black;
+    color: var(--texto_secundario);
 }
