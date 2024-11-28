@@ -21,7 +21,7 @@
     <form action="{{ url_for('upload_foto') }}" method="POST" enctype="multipart/form-data">
     <label for="foto_perfil">Escolha uma foto de perfil:</label><br>
     <input type="file" name="foto_perfil" accept="image/*">
-    <button type="submit">Enviar Foto</button>
+    <button type="submit" id="submit">Enviar Foto</button>
 </form>
 
     {% if nome %}
