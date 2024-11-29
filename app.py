@@ -4,8 +4,9 @@ import sqlite3
 import os
 from datetime import timedelta
 from models import init_db, inserir_usuario, deletar_usuario
+from supabase import create_client, Client
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.secret_key = os.urandom(24)
 
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
@@ -17,6 +18,50 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 init_db()
 
+# Defina suas credenciais do Supabase
+url = "https://zhuyytyhkmahjohqbsqd.supabase.co"
+key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpodXl5dHloa21haGpvaHFic3FkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI4Nzg4NTMsImV4cCI6MjA0ODQ1NDg1M30.cyD6WqNNuGI4kPhtYSjBJ5TNennRxCnizcTrbRH-ufM"
+supabase: Client = create_client(url, key)
+
+# Função para extrair o nome do arquivo da URL
+def extrair_nome_arquivo(url):
+    return url.split("/")[-1]
+
+# Registra o filtro personalizado no Flask
+app.jinja_env.filters['nome_arquivo'] = extrair_nome_arquivo
+
+# Agora, você pode usar o filtro no seu template
+
+
+# Função para buscar partituras do Supabase
+def buscar_partituras(estilo=None):
+    if estilo and estilo != 'Todos':
+        response = supabase.table('partituras').select('arquivo_url').eq('estilo_musical', estilo).execute()
+    else:
+        response = supabase.table('partituras').select('arquivo_url').execute()
+    
+    return response.data if response.data else []
+
+@app.route('/partituras/<estilo>', methods=['GET'])
+def partituras_por_estilo(estilo):
+    if estilo == 'Todos':
+        # Se o estilo for "Todos", busca todas as partituras
+        response = supabase.table('partituras').select('arquivo_url').execute()
+    else:
+        # Se o estilo não for "Todos", filtra por estilo
+        response = supabase.table('partituras').select('arquivo_url').eq('estilo_musical', estilo).execute()
+
+    # Verifica se a consulta retornou algum dado
+    partituras = response.data if response.data else []
+
+    # Extraímos apenas o nome do arquivo
+    for partitura in partituras:
+        partitura['nome_arquivo'] = partitura['arquivo_url'].split('/')[-1]
+
+    # Retorna as partituras para o template
+    return render_template('partituras.html', partituras=partituras, estilo=estilo)
+
+
 @app.route('/')
 def home():
     if 'nome' not in session:
@@ -24,7 +69,13 @@ def home():
     
     nome = session['nome']
     foto_perfil = session.get('foto_perfil', None)
-    return render_template('index.html', nome=nome, foto_perfil=foto_perfil)
+
+    # Buscar as partituras para exibir na página inicial
+    response = supabase.table('partituras').select('arquivo_url').execute()
+    partituras = response.data if response.data else []
+
+    return render_template('index.html', nome=nome, foto_perfil=foto_perfil, partituras=partituras)
+
 
 @app.route('/criarconta', methods=['GET', 'POST'])
 def criar_conta():
@@ -123,6 +174,37 @@ def upload_foto():
 
         session['foto_perfil'] = f'uploads/{filename}'
         return redirect(url_for('perfil'))
+
+@app.route('/pesquisa', methods=['GET'])
+def pesquisa():
+    query = request.args.get('q', '').lower()
+    
+    partituras_resultados = [partitura for partitura in partituras if query in partitura['arquivo_url'].lower()]
+    
+    return render_template('index.html', partituras=partituras_resultados)
+
+# Página para inserir partituras
+@app.route('/inserir_partitura', methods=['GET', 'POST'])
+def inserir_partitura():
+    if 'email' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        estilo_musical = request.form['estilo_musical']
+        arquivo_url = request.form['arquivo_url']
+
+        # Inserir a partitura no Supabase
+        response = supabase.table('partituras').insert({
+            'estilo_musical': estilo_musical,
+            'arquivo_url': arquivo_url
+        }).execute()
+
+        if response.status_code == 201:
+            return redirect(url_for('home'))
+        else:
+            return f"Erro ao inserir partitura: {response.error_message}"
+
+    return render_template('inserir_partitura.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
