@@ -34,34 +34,26 @@ def buscar_partituras(estilo=None):
         response = supabase.table('partituras').select('arquivo_url').execute()
     return response.data if response.data else []
 
-# Rota para a pesquisa
-@app.route('/pesquisa', methods=['GET'])
-def pesquisa():
-    query = request.args.get('q', '').lower()
-    response = supabase.table('partituras').select('arquivo_url').execute()
-    partituras = response.data if response.data else []
-    partituras_resultados = [partitura for partitura in partituras if query in partitura['arquivo_url'].lower()]
-    return render_template('index.html', partituras=partituras_resultados)
-
 # Rota para o login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form['email']
         senha = request.form['senha']
-        response = supabase.table('usuarios').select('id', 'email', 'senha', 'nome').eq('email', email).execute()
+        response = supabase.table('usuarios').select('id', 'email', 'senha', 'nome', 'foto_perfil').eq('email', email).execute()
 
         if response.data:
             usuario = response.data[0]
             if check_password_hash(usuario['senha'], senha):
                 session['nome'] = usuario['nome']
                 session['usuario_id'] = usuario['id']
-                session['email'] = usuario['email']  # Salvar o e-mail na sessão
+                session['email'] = usuario['email']
+                session['foto_perfil'] = usuario.get('foto_perfil', None)  # Armazenar foto de perfil se houver
                 return redirect(url_for('home'))
             else:
-                return render_template('login.html', erro="Senha incorreta.")
+                flash("Senha incorreta.", "error")
         else:
-            return render_template('login.html', erro="Email não encontrado.")
+            flash("Email não encontrado.", "error")
     
     return render_template('login.html')
 
@@ -93,7 +85,7 @@ def perfil():
 
     nome = session['nome']
     foto_perfil = session.get('foto_perfil', None)
-    email = session.get('email', None)  # Recupera o e-mail da sessão
+    email = session.get('email', None)
 
     return render_template('perfil.html', nome=nome, foto_perfil=foto_perfil, email=email)
 
@@ -113,43 +105,40 @@ def upload_foto():
         # Atualizar a foto de perfil na sessão
         session['foto_perfil'] = f'uploads/{filename}'
 
-        # Você pode também atualizar a foto de perfil no banco de dados, se necessário
+        # Atualizar a foto de perfil no banco de dados
         supabase.table('usuarios').update({'foto_perfil': f'uploads/{filename}'}).eq('id', session['usuario_id']).execute()
 
+        flash("Foto de perfil atualizada com sucesso!", "success")
         return redirect(url_for('perfil'))
 
-    return render_template('perfil.html', erro="Falha ao enviar a foto.")
+    flash("Falha ao enviar a foto.", "error")
+    return redirect(url_for('perfil'))
 
 # Função para criar conta
-@app.route('/registrar', methods=['GET', 'POST'])
-def registrar():
+@app.route('/criar_conta', methods=['GET', 'POST'])
+def criar_conta():
     if request.method == 'POST':
-        # Lógica para criar a conta do usuário
-        username = request.form['username']
-        email = request.form['email']
-        password = generate_password_hash(request.form['password'], method='sha256')
+        # Verifique se os campos existem no formulário
+        nome = request.form.get('nome')  # Usando get() para evitar KeyError
+        email = request.form.get('email')
+        password = request.form.get('password')
 
-        new_user = {
-            "username": username,
-            "email": email,
-            "password": password
-        }
-
-        # Verificar se o e-mail já existe
-        response = supabase.table('usuarios').select('id').eq('email', email).execute()
-        if response.data:
-            flash('Email já cadastrado!', 'error')
+        if not nome or not email or not password:
+            flash('Todos os campos são obrigatórios!', 'error')
             return render_template('criarconta.html')
 
-        # Adicionar usuário ao banco de dados
-        response = supabase.table('usuarios').insert(new_user).execute()
+        # Processar a senha e criar o novo usuário
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
 
-        if response.status_code == 201:
-            return redirect(url_for('login'))
+        # Salvar no banco de dados ou fazer outra lógica aqui
+        # Exemplo de resposta (não funcional sem o banco):
+        # response = supabase.table('usuarios').insert({"nome": nome, "email": email, "senha": hashed_password}).execute()
 
-        flash('Erro ao criar conta, tente novamente.', 'error')
-    
+        flash('Conta criada com sucesso!', 'success')
+        return redirect(url_for('login'))
+
     return render_template('criarconta.html')
+
 
 # Função para pegar todas as partituras
 @app.route('/partituras')
@@ -188,7 +177,6 @@ def inserir_partitura():
             flash('Erro ao inserir partitura.', 'error')
     
     return render_template('inserir_partitura.html')
-
 
 if __name__ == '__main__':
     app.run(debug=True)

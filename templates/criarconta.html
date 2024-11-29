@@ -4,24 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/logins.css') }}">
-    <link rel="shortcut icon" href="{{url_for('static' , filename='img/art_music.ico')}}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/art_music.ico') }}" type="image/x-icon">
     <title>Criar Conta</title> 
 </head>
 <body>
     <div>
-        <form action="{{ url_for('registrar') }}" method="POST" enctype="multipart/form-data">
-            <p>Criar Conta:</p>
+        <form action="{{ url_for('criar_conta') }}" method="POST" enctype="multipart/form-data">
+            <h2>Criar Conta</h2>
+            
+            <!-- Campo para nome -->
             <input type="text" name="nome" id="nome" required placeholder="Nome">
             <br><br>
-            <input type="email" name="email" id="email" required placeholder="exemplo@gmail.com">
-            <br><br>
-            <input type="password" name="senha" id="senha" required placeholder="********">
+
+            <!-- Campo para email -->
+            <input type="email" name="email" id="email" required placeholder="Email (exemplo@gmail.com)">
             <br><br>
 
+            <!-- Campo para senha -->
+            <input type="password" name="password" id="password" required placeholder="********">
+            <br><br>
+
+            <!-- Campo para foto de perfil (opcional) -->
             <label for="foto_perfil">Foto de Perfil (opcional):</label>
             <input type="file" name="foto_perfil" id="foto_perfil">
             <br><br>
 
+            <!-- Botão de envio -->
             <input type="submit" name="submit" id="submit" value="Criar Conta">
         </form>
     </div>

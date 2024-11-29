@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/logins.css') }}">
-    <link rel="shortcut icon" href="{{url_for('static' , filename='img/art_music.ico')}}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/art_music.ico') }}" type="image/x-icon">
     <title>Login</title>
     <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 </head>
@@ -20,13 +20,13 @@
             <br><br>
             <button type="submit" id="submit">Entrar</button>
             <br><br>
-            <a href="{{ url_for('registrar') }}">Criar Conta</a>
+            <a href="{{ url_for('criar_conta') }}">Criar Conta</a>
         </form>
     </div>
 
     {% if erro %}
         <script>
-            mostrarAlertaERedirecionar("{{ erro }}", "{{ url_for('criar_conta') }}");
+            mostrarAlertaERedirecionar("{{ erro }}", "{{ url_for('registrar') }}");
         </script>
     {% endif %}
 </body>
