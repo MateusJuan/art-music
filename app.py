@@ -2,17 +2,20 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.utils import secure_filename
 import sqlite3
 import os
+from datetime import timedelta
 from models import init_db, inserir_usuario, deletar_usuario
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
-init_db()
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+init_db()
 
 @app.route('/')
 def home():
@@ -49,6 +52,7 @@ def login():
         conn.close()
 
         if usuario:
+            session.permanent = True
             session['email'] = email
             session['nome'] = usuario[1]
             session['foto_perfil'] = usuario[4]
