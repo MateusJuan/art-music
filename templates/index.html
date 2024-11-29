@@ -14,11 +14,7 @@
         <a href="{{ url_for('partituras_por_estilo', estilo='Todos') }}" class="abas_a" id="abas_a1">
             <li class="abas">Partituras</li>
         </a>
-<<<<<<< HEAD
-        <a href="cifras.html" class="abas_a" id="abas_a1">
-=======
-        <a href="#" class="abas_a" id="abas_a2">
->>>>>>> 1f2453a9fa7b04e523e2bf756c68d28c2fc4f501
+        <a href="cifras.html" class="abas_a" id="abas_a2">
             <li class="abas">Cifras</li>
         </a>
         <a href="#" class="abas_a" id="abas_a3">
@@ -51,14 +47,14 @@
                 {% endif %}
             </div>
         </a>
-    {% elif not nome %}
+        {% elif not nome %}
         <a href="{{ url_for('login') }}">
             <div class="perfil">
                 <li id="nome">Login</li>
                 <span class="material-symbols-outlined">account_circle</span>
             </div>
         </a>
-    {% endif %}
+        {% endif %}
     </ul>
 
     <hr>
@@ -83,65 +79,27 @@
     </ul>
 
     <!-- Exibição das partituras -->
-    <div class="partituras-container">
-        <h2>Partituras Disponíveis</h2>
-        <ul class="partituras-list">
-            {% if partituras %}
-                {% for partitura in partituras %}
-                {% set arquivo_url = partitura['arquivo_url'] %}
-                {% set filename = arquivo_url.split('/')[-1] %}
-                <li>
-                    <!-- Corrigido o caminho para static/PDF_PARTITURAS -->
-                    <a href="{{ url_for('static', filename='PDF_PARTITURAS/' ~ filename) }}" target="_blank">
-                        {{ filename }}
-                    </a>
-                </li>
-                {% endfor %}
-            {% else %}
-                <li class="partitura-item">Nenhuma partitura disponível no momento.</li>
-            {% endif %}
-        </ul>
-    </div>
+  <!-- Exibição das partituras - Inicialmente oculto -->
+<div class="partituras-container" id="partituras-container" style="display: none;">
+    <ul class="tipos_ul">
+        <li class="tipos_li">
+            <a href="{{ url_for('partituras_por_estilo', estilo='Gospel/Religioso') }}" onclick="exibirPartituras()">Gospel/Religioso</a>
+        </li>
+        <li class="tipos_li">
+            <a href="{{ url_for('partituras_por_estilo', estilo='Rock') }}" onclick="exibirPartituras()">Rock</a>
+        </li>
+        <!-- Adicione outros estilos aqui -->
+    </ul>
+    
+</div>
 
-    <script>
-        // Função de busca para sugerir resultados enquanto o usuário digita
-        function mostrarSugestoes() {
-            const pesquisa = document.getElementById("campoPesquisa").value.toLowerCase();
-            const sugestoes = document.getElementById("sugestoes");
-            sugestoes.innerHTML = ''; // Limpa as sugestões anteriores
+<script>
+    // Exibe o container após selecionar um estilo
+    function exibirPartituras() {
+        document.getElementById('partituras-container').style.display = 'block';
+    }
+</script>
 
-            // Verifica se a pesquisa está vazia
-            if (pesquisa.length === 0) {
-                return;
-            }
-
-            // Itera pelas partituras para encontrar sugestões
-            const partituras = {{ partituras | tojson }}; // Transforma a variável Jinja em JavaScript
-            const resultados = partituras.filter(function(partitura) {
-                return partitura['arquivo_url'].toLowerCase().includes(pesquisa);
-            });
-
-            // Exibe as sugestões
-            resultados.forEach(function(partitura) {
-                const li = document.createElement("li");
-                const a = document.createElement("a");
-                a.href = partitura['arquivo_url'];
-                a.textContent = partitura['arquivo_url'].split('/').pop(); // Exibe apenas o nome do arquivo
-                li.appendChild(a);
-                sugestoes.appendChild(li);
-            });
-        }
-
-        // Função para realizar a pesquisa completa
-        function pesquisar(event) {
-            event.preventDefault();
-            const pesquisa = document.getElementById("campoPesquisa").value;
-            if (pesquisa) {
-                // Redireciona para a página de pesquisa com a consulta
-                window.location.href = "{{ url_for('pesquisa') }}?q=" + encodeURIComponent(pesquisa);
-            }
-        }
-    </script>
 
     <script src="abas.js"></script>
 </body>

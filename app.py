@@ -45,7 +45,6 @@ def partituras_por_estilo(estilo):
         response = supabase.table('partituras').select('arquivo_url').eq('estilo_musical', estilo).execute()
 
     partituras = response.data if response.data else []
-
     for partitura in partituras:
         partitura['nome_arquivo'] = partitura['arquivo_url'].split('/')[-1]
 

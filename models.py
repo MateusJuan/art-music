@@ -99,48 +99,56 @@ def create_musicas():
         conn = sqlite3.connect('database.db') 
         cursor = conn.cursor()
 
+        # Criação das tabelas com a nova coluna de estilo
         cursor.execute('''CREATE TABLE IF NOT EXISTS bandas (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             nome TEXT NOT NULL,
                             genero TEXT NOT NULL)''')
+
         cursor.execute('''CREATE TABLE IF NOT EXISTS partituras (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             banda_id INTEGER,
                             partitura TEXT,
+                            estilo TEXT NOT NULL,
                             FOREIGN KEY(banda_id) REFERENCES bandas(id))''')
+
         cursor.execute('''CREATE TABLE IF NOT EXISTS cifras (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             banda_id INTEGER,
                             cifra TEXT,
+                            estilo TEXT NOT NULL,
                             FOREIGN KEY(banda_id) REFERENCES bandas(id))''')
+
         cursor.execute('''CREATE TABLE IF NOT EXISTS tablaturas (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             banda_id INTEGER,
                             tablatura TEXT,
+                            estilo TEXT NOT NULL,
                             FOREIGN KEY(banda_id) REFERENCES bandas(id))''')
 
+        # Inserção das bandas
         cursor.execute('''INSERT OR IGNORE INTO bandas (nome, genero) VALUES
                         ('Oficina G3', 'gospel'), 
                         ('Vocal Livre', 'gospel'),
                         ('Diante do Trono', 'gospel'),
                         ('Preto no Branco', 'gospel')''')
 
-        cursor.execute('''INSERT OR IGNORE INTO partituras (banda_id, partitura) VALUES
-                        (1, 'Partitura 1a'), (1, 'Partitura 1b'),
-                        (2, 'Partitura 2a'), (2, 'Partitura 2b'),
-                        (3, 'Partitura 3a'), (3, 'Partitura 3b')''')
+        # Inserção de partituras, cifras e tablaturas com estilo
+        cursor.execute('''INSERT OR IGNORE INTO partituras (banda_id, partitura, estilo) VALUES
+                        (1, 'Partitura 1a', 'Gospel'), (1, 'Partitura 1b', 'Gospel'),
+                        (2, 'Partitura 2a', 'Gospel'), (2, 'Partitura 2b', 'Gospel')''')
 
-        cursor.execute('''INSERT OR IGNORE INTO cifras (banda_id, cifra) VALUES
-                        (1, 'Cifra 1a'), (1, 'Cifra 1b'),
-                        (2, 'Cifra 2a'), (2, 'Cifra 2b'),
-                        (3, 'Cifra 3a'), (3, 'Cifra 3b')''')
+        cursor.execute('''INSERT OR IGNORE INTO cifras (banda_id, cifra, estilo) VALUES
+                        (1, 'Cifra 1a', 'Gospel'), (1, 'Cifra 1b', 'Gospel'),
+                        (2, 'Cifra 2a', 'Gospel'), (2, 'Cifra 2b', 'Gospel')''')
 
-        cursor.execute('''INSERT OR IGNORE INTO tablaturas (banda_id, tablatura) VALUES
-                        (1, 'Tablatura 1a'), (1, 'Tablatura 1b'),
-                        (2, 'Tablatura 2a'), (2, 'Tablatura 2b'),
-                        (3, 'Tablatura 3a'), (3, 'Tablatura 3b')''')
+        cursor.execute('''INSERT OR IGNORE INTO tablaturas (banda_id, tablatura, estilo) VALUES
+                        (1, 'Tablatura 1a', 'Gospel'), (1, 'Tablatura 1b', 'Gospel'),
+                        (2, 'Tablatura 2a', 'Gospel'), (2, 'Tablatura 2b', 'Gospel')''')
+
         conn.commit()
         conn.close()
+        print("Tabelas criadas e registros adicionados com sucesso.")
 
     except Exception as e:
         print(f'Erro ao criar os registros das bandas: {e}')
