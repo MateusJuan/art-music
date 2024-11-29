@@ -113,6 +113,9 @@ def login():
 
         # Verificar se o login falhou
         if response.user is None:
+            # Log the error message for debugging
+            print(f"Login failed: {response.error['message']}")
+
             # Checar se o erro é relacionado ao email não confirmado
             if response.error and response.error.get('message') == 'Email not confirmed':
                 return redirect(url_for('reenviar_confirmacao'))
@@ -131,7 +134,6 @@ def login():
         else:
             return "Usuário não encontrado."
 
-    return render_template('login.html')
 
 @app.route('/reenviar_confirmacao', methods=['POST'])
 def reenviar_confirmacao():
