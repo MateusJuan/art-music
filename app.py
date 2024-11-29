@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 import os
 from datetime import timedelta
 from supabase import create_client, Client
@@ -114,6 +114,8 @@ def upload_foto():
         session['foto_perfil'] = f'uploads/{filename}'
 
         # Você pode também atualizar a foto de perfil no banco de dados, se necessário
+        supabase.table('usuarios').update({'foto_perfil': f'uploads/{filename}'}).eq('id', session['usuario_id']).execute()
+
         return redirect(url_for('perfil'))
 
     return render_template('perfil.html', erro="Falha ao enviar a foto.")
@@ -132,6 +134,12 @@ def registrar():
             "email": email,
             "password": password
         }
+
+        # Verificar se o e-mail já existe
+        response = supabase.table('usuarios').select('id').eq('email', email).execute()
+        if response.data:
+            flash('Email já cadastrado!', 'error')
+            return render_template('criarconta.html')
 
         # Adicionar usuário ao banco de dados
         response = supabase.table('usuarios').insert(new_user).execute()
@@ -155,6 +163,32 @@ def partituras():
 def partituras_por_estilo(estilo):
     partituras = buscar_partituras(estilo)
     return jsonify(partituras)
+
+# Rota para renderizar a página de inserir partitura
+@app.route('/inserir_partitura', methods=['GET', 'POST'])
+def inserir_partitura():
+    if 'nome' not in session:
+        return redirect(url_for('login'))
+    
+    if request.method == 'POST':
+        estilo_musical = request.form['estilo_musical']
+        arquivo_url = request.form['arquivo_url']
+        
+        # Insere a nova partitura no Supabase
+        new_partitura = {
+            'estilo_musical': estilo_musical,
+            'arquivo_url': arquivo_url
+        }
+        response = supabase.table('partituras').insert(new_partitura).execute()
+        
+        if response.status_code == 201:
+            flash('Partitura inserida com sucesso!', 'success')
+            return redirect(url_for('home'))
+        else:
+            flash('Erro ao inserir partitura.', 'error')
+    
+    return render_template('inserir_partitura.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
