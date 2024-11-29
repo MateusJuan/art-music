@@ -99,7 +99,6 @@ def create_musicas():
         conn = sqlite3.connect('database.db') 
         cursor = conn.cursor()
 
-        # Criação das tabelas com a nova coluna de estilo
         cursor.execute('''CREATE TABLE IF NOT EXISTS bandas (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             nome TEXT NOT NULL,
@@ -126,20 +125,18 @@ def create_musicas():
                             estilo TEXT NOT NULL,
                             FOREIGN KEY(banda_id) REFERENCES bandas(id))''')
 
-        # Inserção das bandas
         cursor.execute('''INSERT OR IGNORE INTO bandas (nome, genero) VALUES
                         ('Oficina G3', 'gospel'), 
                         ('Vocal Livre', 'gospel'),
                         ('Diante do Trono', 'gospel'),
                         ('Preto no Branco', 'gospel')''')
 
-        # Inserção de partituras, cifras e tablaturas com estilo
         cursor.execute('''INSERT OR IGNORE INTO partituras (banda_id, partitura, estilo) VALUES
-                        (1, 'Partitura 1a', 'Gospel'), (1, 'Partitura 1b', 'Gospel'),
-                        (2, 'Partitura 2a', 'Gospel'), (2, 'Partitura 2b', 'Gospel')''')
+                        (1, 'static/PDF_PARTITURAS/A-Comecar-em-Mim-Base.pdf', 'Gospel'), (1, 'static/PDF_PARTITURAS/A-Comecar-em-Mim-Vocal.pdf', 'Gospel'),
+                        (2, 'static/PDF_PARTITURAS/Nossa-Oracao-Base.pdf', 'Gospel'), (2, 'static/PDF_PARTITURAS/Nossa-Oracao-Vocal.pdf', 'Gospel')''')
 
         cursor.execute('''INSERT OR IGNORE INTO cifras (banda_id, cifra, estilo) VALUES
-                        (1, 'Cifra 1a', 'Gospel'), (1, 'Cifra 1b', 'Gospel'),
+                        (1, 'PDF_CIFRAS/Florecer.pdf', 'Gospel'), (1, 'Cifra 1b', 'Gospel'),
                         (2, 'Cifra 2a', 'Gospel'), (2, 'Cifra 2b', 'Gospel')''')
 
         cursor.execute('''INSERT OR IGNORE INTO tablaturas (banda_id, tablatura, estilo) VALUES
