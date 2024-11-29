@@ -13,16 +13,31 @@ UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+<<<<<<< HEAD
 # Credenciais do Supabase
+=======
+init_db()
+
+>>>>>>> 319a914eb248a73d390755c4494ae0fcd9fc2aea
 url = "https://zhuyytyhkmahjohqbsqd.supabase.co"
 key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpodXl5dHloa21haGpvaHFic3FkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI4Nzg4NTMsImV4cCI6MjA0ODQ1NDg1M30.cyD6WqNNuGI4kPhtYSjBJ5TNennRxCnizcTrbRH-ufM"
 supabase: Client = create_client(url, key)
 
+<<<<<<< HEAD
 # Função para registrar o filtro personalizado no Flask
 def extrair_nome_arquivo(url):
     return url.split("/")[-1]
 
 # Função para buscar partituras do Supabase
+=======
+def extrair_nome_arquivo(url):
+    return url.split("/")[-1]
+
+app.jinja_env.filters['nome_arquivo'] = extrair_nome_arquivo
+
+
+
+>>>>>>> 319a914eb248a73d390755c4494ae0fcd9fc2aea
 def buscar_partituras(estilo=None):
     if estilo and estilo != 'Todos':
         response = supabase.table('partituras').select('arquivo_url').eq('estilo_musical', estilo).execute()
@@ -39,7 +54,10 @@ def partituras_por_estilo(estilo):
         response = supabase.table('partituras').select('arquivo_url').eq('estilo_musical', estilo).execute()
 
     partituras = response.data if response.data else []
+<<<<<<< HEAD
 
+=======
+>>>>>>> 319a914eb248a73d390755c4494ae0fcd9fc2aea
     for partitura in partituras:
         partitura['nome_arquivo'] = partitura['arquivo_url'].split('/')[-1]
 
@@ -207,5 +225,37 @@ def upload_foto():
         session['foto_perfil'] = f'uploads/{filename}'
         return redirect(url_for('perfil'))
 
+<<<<<<< HEAD
+=======
+@app.route('/pesquisa', methods=['GET'])
+def pesquisa():
+    query = request.args.get('q', '').lower()
+    
+    partituras_resultados = [partitura for partitura in partituras if query in partitura['arquivo_url'].lower()]
+    
+    return render_template('index.html', partituras=partituras_resultados)
+
+@app.route('/inserir_partitura', methods=['GET', 'POST'])
+def inserir_partitura():
+    if 'email' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        estilo_musical = request.form['estilo_musical']
+        arquivo_url = request.form['arquivo_url']
+
+        response = supabase.table('partituras').insert({
+            'estilo_musical': estilo_musical,
+            'arquivo_url': arquivo_url
+        }).execute()
+
+        if response.status_code == 201:
+            return redirect(url_for('home'))
+        else:
+            return f"Erro ao inserir partitura: {response.error_message}"
+
+    return render_template('inserir_partitura.html')
+
+>>>>>>> 319a914eb248a73d390755c4494ae0fcd9fc2aea
 if __name__ == '__main__':
     app.run(debug=True)

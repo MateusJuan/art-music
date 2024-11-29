@@ -14,7 +14,11 @@
         <a href="{{ url_for('partituras_por_estilo', estilo='Todos') }}" class="abas_a" id="abas_a1">
             <li class="abas">Partituras</li>
         </a>
+<<<<<<< HEAD
         <a href="#" class="abas_a" id="abas_a2">
+=======
+        <a href="cifras.html" class="abas_a" id="abas_a2">
+>>>>>>> 319a914eb248a73d390755c4494ae0fcd9fc2aea
             <li class="abas">Cifras</li>
         </a>
         <a href="#" class="abas_a" id="abas_a3">
@@ -47,14 +51,14 @@
                 {% endif %}
             </div>
         </a>
-    {% elif not nome %}
+        {% elif not nome %}
         <a href="{{ url_for('login') }}">
             <div class="perfil">
                 <li id="nome">Login</li>
                 <span class="material-symbols-outlined">account_circle</span>
             </div>
         </a>
-    {% endif %}
+        {% endif %}
     </ul>
 
     <hr>
@@ -79,6 +83,7 @@
     </ul>
 
     <!-- Exibição das partituras -->
+<<<<<<< HEAD
     <div class="partituras-container">
         <h2>Partituras Disponíveis</h2>
         <ul class="partituras-list" id="partiturasList">
@@ -156,6 +161,29 @@
         //     }
         // }
     </script>
+=======
+  <!-- Exibição das partituras - Inicialmente oculto -->
+<div class="partituras-container" id="partituras-container" style="display: none;">
+    <ul class="tipos_ul">
+        <li class="tipos_li">
+            <a href="{{ url_for('partituras_por_estilo', estilo='Gospel/Religioso') }}" onclick="exibirPartituras()">Gospel/Religioso</a>
+        </li>
+        <li class="tipos_li">
+            <a href="{{ url_for('partituras_por_estilo', estilo='Rock') }}" onclick="exibirPartituras()">Rock</a>
+        </li>
+        <!-- Adicione outros estilos aqui -->
+    </ul>
+    
+</div>
+
+<script>
+    // Exibe o container após selecionar um estilo
+    function exibirPartituras() {
+        document.getElementById('partituras-container').style.display = 'block';
+    }
+</script>
+
+>>>>>>> 319a914eb248a73d390755c4494ae0fcd9fc2aea
 
     <script src="abas.js"></script>
 </body>
