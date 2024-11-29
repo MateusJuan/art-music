@@ -93,3 +93,54 @@ def adicionar_coluna_foto_perfil():
         print("Coluna 'foto_perfil' adicionada com sucesso.")
     except Exception as e:
         print(f"Erro ao adicionar a coluna 'foto_perfil': {e}")
+
+def create_musicas():
+    try:
+        conn = sqlite3.connect('database.db') 
+        cursor = conn.cursor()
+
+        cursor.execute('''CREATE TABLE IF NOT EXISTS bandas (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            nome TEXT NOT NULL,
+                            genero TEXT NOT NULL)''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS partituras (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            banda_id INTEGER,
+                            partitura TEXT,
+                            FOREIGN KEY(banda_id) REFERENCES bandas(id))''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS cifras (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            banda_id INTEGER,
+                            cifra TEXT,
+                            FOREIGN KEY(banda_id) REFERENCES bandas(id))''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS tablaturas (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            banda_id INTEGER,
+                            tablatura TEXT,
+                            FOREIGN KEY(banda_id) REFERENCES bandas(id))''')
+
+        cursor.execute('''INSERT OR IGNORE INTO bandas (nome, genero) VALUES
+                        ('Oficina G3', 'gospel'), 
+                        ('Vocal Livre', 'gospel'),
+                        ('Diante do Trono', 'gospel'),
+                        ('Preto no Branco', 'gospel')''')
+
+        cursor.execute('''INSERT OR IGNORE INTO partituras (banda_id, partitura) VALUES
+                        (1, 'Partitura 1a'), (1, 'Partitura 1b'),
+                        (2, 'Partitura 2a'), (2, 'Partitura 2b'),
+                        (3, 'Partitura 3a'), (3, 'Partitura 3b')''')
+
+        cursor.execute('''INSERT OR IGNORE INTO cifras (banda_id, cifra) VALUES
+                        (1, 'Cifra 1a'), (1, 'Cifra 1b'),
+                        (2, 'Cifra 2a'), (2, 'Cifra 2b'),
+                        (3, 'Cifra 3a'), (3, 'Cifra 3b')''')
+
+        cursor.execute('''INSERT OR IGNORE INTO tablaturas (banda_id, tablatura) VALUES
+                        (1, 'Tablatura 1a'), (1, 'Tablatura 1b'),
+                        (2, 'Tablatura 2a'), (2, 'Tablatura 2b'),
+                        (3, 'Tablatura 3a'), (3, 'Tablatura 3b')''')
+        conn.commit()
+        conn.close()
+
+    except Exception as e:
+        print(f'Erro ao criar os registros das bandas: {e}')
