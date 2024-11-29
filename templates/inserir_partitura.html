@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inserir Partitura</title>
+</head>
+<body>
+    <h1>Inserir Partitura</h1>
+    <form method="POST" action="{{ url_for('inserir_partitura') }}">
+        <label for="estilo_musical">Estilo Musical:</label>
+        <input type="text" name="estilo_musical" id="estilo_musical" required><br><br>
+
+        <label for="arquivo_url">URL da Partitura:</label>
+        <input type="text" name="arquivo_url" id="arquivo_url" required><br><br>
+
+        <button type="submit">Inserir Partitura</button>
+    </form>
+
+    <br>
+    <a href="{{ url_for('home') }}">Voltar à página inicial</a>
+</body>
+</html>

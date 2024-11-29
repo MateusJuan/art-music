@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partituras - {{ estilo }}</title>
+</head>
+<body>
+    <h1>Partituras de {{ estilo }}</h1>
+
+    {% if partituras %}
+        <ul>
+            {% for partitura in partituras %}
+                {% set arquivo_url = partitura['arquivo_url'] %}
+                {% set filename = arquivo_url.split('/')[-1] %}
+                <li>
+                    <!-- Corrigido o caminho para static/PDF_PARTITURAS -->
+                    <a href="{{ url_for('static', filename='PDF_PARTITURAS/' ~ filename) }}" target="_blank">
+                        {{ filename }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Não há partituras disponíveis para o estilo "{{ estilo }}".</p>
+    {% endif %}
+</body>
+</html>
