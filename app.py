@@ -13,31 +13,17 @@ UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-<<<<<<< HEAD
 # Credenciais do Supabase
-=======
-init_db()
-
->>>>>>> 319a914eb248a73d390755c4494ae0fcd9fc2aea
 url = "https://zhuyytyhkmahjohqbsqd.supabase.co"
 key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpodXl5dHloa21haGpvaHFic3FkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI4Nzg4NTMsImV4cCI6MjA0ODQ1NDg1M30.cyD6WqNNuGI4kPhtYSjBJ5TNennRxCnizcTrbRH-ufM"
 supabase: Client = create_client(url, key)
 
-<<<<<<< HEAD
 # Função para registrar o filtro personalizado no Flask
-def extrair_nome_arquivo(url):
-    return url.split("/")[-1]
-
-# Função para buscar partituras do Supabase
-=======
 def extrair_nome_arquivo(url):
     return url.split("/")[-1]
 
 app.jinja_env.filters['nome_arquivo'] = extrair_nome_arquivo
 
-
-
->>>>>>> 319a914eb248a73d390755c4494ae0fcd9fc2aea
 def buscar_partituras(estilo=None):
     if estilo and estilo != 'Todos':
         response = supabase.table('partituras').select('arquivo_url').eq('estilo_musical', estilo).execute()
@@ -54,10 +40,7 @@ def partituras_por_estilo(estilo):
         response = supabase.table('partituras').select('arquivo_url').eq('estilo_musical', estilo).execute()
 
     partituras = response.data if response.data else []
-<<<<<<< HEAD
 
-=======
->>>>>>> 319a914eb248a73d390755c4494ae0fcd9fc2aea
     for partitura in partituras:
         partitura['nome_arquivo'] = partitura['arquivo_url'].split('/')[-1]
 
@@ -225,8 +208,6 @@ def upload_foto():
         session['foto_perfil'] = f'uploads/{filename}'
         return redirect(url_for('perfil'))
 
-<<<<<<< HEAD
-=======
 @app.route('/pesquisa', methods=['GET'])
 def pesquisa():
     query = request.args.get('q', '').lower()
@@ -256,6 +237,5 @@ def inserir_partitura():
 
     return render_template('inserir_partitura.html')
 
->>>>>>> 319a914eb248a73d390755c4494ae0fcd9fc2aea
 if __name__ == '__main__':
     app.run(debug=True)
