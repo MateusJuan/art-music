@@ -56,6 +56,7 @@ def login():
             if check_password_hash(usuario['senha'], senha):
                 session['nome'] = usuario['nome']
                 session['usuario_id'] = usuario['id']
+                session['email'] = usuario['email']  # Salvar o e-mail na sessão
                 return redirect(url_for('home'))
             else:
                 return render_template('login.html', erro="Senha incorreta.")
@@ -84,41 +85,63 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
-# Rota para registrar novos usuários
-@app.route('/registrar', methods=['GET', 'POST'])
-def registrar():
-    if request.method == 'POST':
-        # Aqui você pode adicionar a lógica para registrar o usuário
-        return redirect(url_for('login'))  # Redireciona para a página de login após o registro
-    return render_template('login.html')  # Ou qualquer outro template que você queira exibir
-
-# Rota para o upload de partituras
-@app.route('/upload', methods=['GET', 'POST'])
-def upload():
+# Função para perfil do usuário
+@app.route('/perfil')
+def perfil():
     if 'nome' not in session:
         return redirect(url_for('login'))
 
+    nome = session['nome']
+    foto_perfil = session.get('foto_perfil', None)
+    email = session.get('email', None)  # Recupera o e-mail da sessão
+
+    return render_template('perfil.html', nome=nome, foto_perfil=foto_perfil, email=email)
+
+# Rota para upload de foto de perfil
+@app.route('/upload_foto', methods=['POST'])
+def upload_foto():
+    if 'nome' not in session:
+        return redirect(url_for('login'))
+
+    foto = request.files.get('foto_perfil')
+
+    if foto:
+        filename = secure_filename(foto.filename)
+        foto_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        foto.save(foto_path)
+
+        # Atualizar a foto de perfil na sessão
+        session['foto_perfil'] = f'uploads/{filename}'
+
+        # Você pode também atualizar a foto de perfil no banco de dados, se necessário
+        return redirect(url_for('perfil'))
+
+    return render_template('perfil.html', erro="Falha ao enviar a foto.")
+
+# Função para criar conta
+@app.route('/registrar', methods=['GET', 'POST'])
+def registrar():
     if request.method == 'POST':
-        arquivo = request.files['arquivo']
-        estilo_musical = request.form['estilo_musical']
+        # Lógica para criar a conta do usuário
+        username = request.form['username']
+        email = request.form['email']
+        password = generate_password_hash(request.form['password'], method='sha256')
 
-        if arquivo and estilo_musical:
-            filename = secure_filename(arquivo.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            arquivo.save(filepath)
+        new_user = {
+            "username": username,
+            "email": email,
+            "password": password
+        }
 
-            # Inserindo a partitura no banco de dados
-            response = supabase.table('partituras').insert({
-                'arquivo_url': f'uploads/{filename}',
-                'estilo_musical': estilo_musical
-            }).execute()
+        # Adicionar usuário ao banco de dados
+        response = supabase.table('usuarios').insert(new_user).execute()
 
-            if response.status_code == 201:
-                return redirect(url_for('home'))
-            else:
-                return render_template('upload.html', erro="Erro ao fazer upload da partitura.")
+        if response.status_code == 201:
+            return redirect(url_for('login'))
+
+        flash('Erro ao criar conta, tente novamente.', 'error')
     
-    return render_template('upload.html')
+    return render_template('criarconta.html')
 
 # Função para pegar todas as partituras
 @app.route('/partituras')
