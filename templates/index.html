@@ -5,21 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
-    <link rel="shortcut icon" href="{{url_for('static' , filename='img/art_music.ico')}}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/art_music.ico') }}" type="image/x-icon">
     <title>Art`Music</title>
 </head>
 <body>
     <ul class="abas_ul">
-        <a href="partituras.html" class="abas_a" id="abas_a1">
+        <!-- Links de navegação -->
+        <a href="{{ url_for('partituras_por_estilo', estilo='Todos') }}" class="abas_a" id="abas_a1">
             <li class="abas">Partituras</li>
         </a>
+<<<<<<< HEAD
         <a href="cifras.html" class="abas_a" id="abas_a1">
+=======
+        <a href="#" class="abas_a" id="abas_a2">
+>>>>>>> 1f2453a9fa7b04e523e2bf756c68d28c2fc4f501
             <li class="abas">Cifras</li>
         </a>
-        <a href="" class="abas_a" id="abas_a1">
+        <a href="#" class="abas_a" id="abas_a3">
             <li class="abas">Tablaturas</li>
         </a>
 
+        <!-- Barra de pesquisa -->
         <div class="abas_pesquisar">
             <input type="text" id="campoPesquisa" placeholder="O que você deseja aprender ou tocar hoje?" oninput="mostrarSugestoes()">
             <a href="#" onclick="pesquisar(event)">
@@ -28,10 +34,12 @@
             <ul id="sugestoes" class="sugestoes"></ul>
         </div>
 
-        <a href="">
+        <!-- Link para as listas -->
+        <a href="#">
             <li class="abas">Minhas Listas</li>
         </a>
 
+        <!-- Perfil do usuário -->
         {% if nome %}
         <a href="{{ url_for('perfil') }}">
             <div class="perfil">
@@ -51,21 +59,90 @@
             </div>
         </a>
     {% endif %}
-    
-    
     </ul>
+
     <hr>
+
+    <!-- Menu de estilos de partituras -->
     <ul class="tipos_ul">
-        <li class="tipos_li" id="todos_li1">Todos</li>
-        <li class="tipos_li">Gospel/Religioso</li>
-        <li class="tipos_li">Rock</li>
-        <select name="Mais" id="" onchange="goToLink(this.value)">
+        <li class="tipos_li" id="todos_li1">
+            <a href="{{ url_for('partituras_por_estilo', estilo='Todos') }}">Todos</a>
+        </li>
+        <li class="tipos_li">
+            <a href="{{ url_for('partituras_por_estilo', estilo='Gospel/Religioso') }}">Gospel/Religioso</a>
+        </li>
+        <li class="tipos_li">
+            <a href="{{ url_for('partituras_por_estilo', estilo='Rock') }}">Rock</a>
+        </li>
+        <select name="Mais" id="mais_estilos">
             <option value="0">Mais</option>
             <option value="1">Pagode</option>
             <option value="2">Samba</option>
             <option value="3">Clássica</option>
         </select>
     </ul>
+
+    <!-- Exibição das partituras -->
+    <div class="partituras-container">
+        <h2>Partituras Disponíveis</h2>
+        <ul class="partituras-list">
+            {% if partituras %}
+                {% for partitura in partituras %}
+                {% set arquivo_url = partitura['arquivo_url'] %}
+                {% set filename = arquivo_url.split('/')[-1] %}
+                <li>
+                    <!-- Corrigido o caminho para static/PDF_PARTITURAS -->
+                    <a href="{{ url_for('static', filename='PDF_PARTITURAS/' ~ filename) }}" target="_blank">
+                        {{ filename }}
+                    </a>
+                </li>
+                {% endfor %}
+            {% else %}
+                <li class="partitura-item">Nenhuma partitura disponível no momento.</li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <script>
+        // Função de busca para sugerir resultados enquanto o usuário digita
+        function mostrarSugestoes() {
+            const pesquisa = document.getElementById("campoPesquisa").value.toLowerCase();
+            const sugestoes = document.getElementById("sugestoes");
+            sugestoes.innerHTML = ''; // Limpa as sugestões anteriores
+
+            // Verifica se a pesquisa está vazia
+            if (pesquisa.length === 0) {
+                return;
+            }
+
+            // Itera pelas partituras para encontrar sugestões
+            const partituras = {{ partituras | tojson }}; // Transforma a variável Jinja em JavaScript
+            const resultados = partituras.filter(function(partitura) {
+                return partitura['arquivo_url'].toLowerCase().includes(pesquisa);
+            });
+
+            // Exibe as sugestões
+            resultados.forEach(function(partitura) {
+                const li = document.createElement("li");
+                const a = document.createElement("a");
+                a.href = partitura['arquivo_url'];
+                a.textContent = partitura['arquivo_url'].split('/').pop(); // Exibe apenas o nome do arquivo
+                li.appendChild(a);
+                sugestoes.appendChild(li);
+            });
+        }
+
+        // Função para realizar a pesquisa completa
+        function pesquisar(event) {
+            event.preventDefault();
+            const pesquisa = document.getElementById("campoPesquisa").value;
+            if (pesquisa) {
+                // Redireciona para a página de pesquisa com a consulta
+                window.location.href = "{{ url_for('pesquisa') }}?q=" + encodeURIComponent(pesquisa);
+            }
+        }
+    </script>
+
     <script src="abas.js"></script>
 </body>
 </html>
