@@ -7,12 +7,12 @@
 </head>
 <body>
     <h1>Inserir Partitura</h1>
-    <form method="POST" action="{{ url_for('inserir_partitura') }}">
+    <form method="POST" action="{{ url_for('inserir_partitura') }}" enctype="multipart/form-data">
         <label for="estilo_musical">Estilo Musical:</label>
         <input type="text" name="estilo_musical" id="estilo_musical" required><br><br>
 
-        <label for="arquivo_url">URL da Partitura:</label>
-        <input type="text" name="arquivo_url" id="arquivo_url" required><br><br>
+        <label for="arquivo_pdf">Arquivo PDF da Partitura:</label>
+        <input type="file" name="arquivo_pdf" id="arquivo_pdf" accept="application/pdf" required><br><br>
 
         <button type="submit">Inserir Partitura</button>
     </form>
