@@ -42,7 +42,7 @@ def login():
                 session['nome'] = usuario['nome']
                 session['usuario_id'] = usuario['id']
                 session['email'] = usuario['email']
-                session['foto_perfil'] = usuario.get('foto_perfil', None)  # Armazenar foto de perfil se houver
+                session['foto_perfil'] = usuario.get('foto_perfil', None)
                 return redirect(url_for('home'))
             else:
                 flash("Senha incorreta.", "error")
@@ -156,25 +156,20 @@ def inserir_partitura():
         arquivo_pdf = request.files['arquivo_pdf']
 
         if arquivo_pdf:
-            # Certificar-se de que o diretório de upload existe
             if not os.path.exists(app.config['UPLOAD_FOLDER']):
                 os.makedirs(app.config['UPLOAD_FOLDER'])
 
-            # Salvar o arquivo
             filename = secure_filename(arquivo_pdf.filename)
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             arquivo_pdf.save(file_path)
 
-            # Gerar a URL correta do arquivo
             file_url = url_for('static', filename=f'PDF_PARTITURAS/{filename}')
             
-            # Salvar as informações no banco de dados ou enviar para Supabase
             new_partitura = {
                 'estilo_musical': estilo_musical,
-                'arquivo_url': file_url  # URL correta para o arquivo estático
+                'arquivo_url': file_url
             }
 
-            # Supondo que você tenha o código para salvar no banco de dados
             response = supabase.table('partituras').insert(new_partitura).execute()
 
             if response.data and len(response.data) > 0:
