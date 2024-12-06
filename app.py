@@ -145,7 +145,7 @@ def home():
     foto_perfil = session.get('foto_perfil', None)
 
     response = supabase.table('partituras').select('arquivo_url').execute()
-    partituras = response.data if response.data else []
+    partituras = buscar_partituras()
 
     return render_template('index.html', nome=nome, foto_perfil=foto_perfil, partituras=partituras)
 
@@ -258,7 +258,7 @@ def criar_conta():
 @app.route('/partituras')
 def partituras():
     response = supabase.table('partituras').select('arquivo_url').execute()
-    partituras = response.data if response.data else []
+    partituras = buscar_partituras()
     return jsonify(partituras)
 
 @app.route('/partituras/estilo/<estilo>') 
