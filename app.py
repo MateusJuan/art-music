@@ -27,7 +27,7 @@ def upload_file(file):
     # Fazendo upload do arquivo
     result = supabase.storage.from_(bucket_name).upload(file_path_in_bucket, file)
     
-    if result.error_message:
+    if result.error_message: # erro por causa do error_message
         return None, result.error_message
     else:
         return file_path_in_bucket, None
@@ -39,7 +39,7 @@ def save_file_path_to_db(file_path_in_bucket):
     # Salvando no banco de dados
     result = supabase.from_('arquivos').insert([data]).execute()
     
-    if result.error_message:
+    if result.error_message: #erro por causa do error_message --> AttributeError: 'APIResponse[TypeVar]' object has no attribute 'error_message'
         return result.error_message
     return None
 
@@ -247,7 +247,7 @@ def criar_conta():
         }
         response = supabase.table('usuarios').insert(new_user).execute()
 
-        if response.error_message:
+        if response.error_message: # erro por causa do error_message
             flash('Erro ao criar conta. Tente novamente.', 'error')
         else:
             flash('Conta criada com sucesso!', 'success')
@@ -257,7 +257,7 @@ def criar_conta():
 
 @app.route('/partituras')
 def partituras():
-    response = supabase.table('partituras').select('arquivo_url').execute()
+    #response = supabase.table('partituras').select('arquivo_url').execute()
     partituras = buscar_partituras()
     return jsonify(partituras)
 
