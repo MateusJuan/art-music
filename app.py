@@ -184,6 +184,5 @@ def inserir_partitura():
 
     return render_template('inserir_partitura.html')
 
-# Usando o Waitress para rodar a aplicação
 if __name__ == "__main__":
-    serve(app, host="0.0.0.0", port=8080)
+    app.run(debug=True)
