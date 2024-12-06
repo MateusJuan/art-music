@@ -65,6 +65,41 @@ def home():
 
     return render_template('index.html', nome=nome, foto_perfil=foto_perfil, partituras=partituras)
 
+@app.route('/trocarSenha', methods=['GET', 'POST'])
+def trocarSenha():
+    if 'usuario_id' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        senha_atual = request.form['senha_atual']
+        nova_senha = request.form['nova_senha']
+        confirmar_nova_senha = request.form['confirmar_nova_senha']
+
+        response = supabase.table('usuarios').select('senha').eq('id', session['usuario_id']).execute()
+
+        if not response.data:
+            flash("Erro ao localizar o usuário.", "error")
+            return redirect(url_for('trocarSenha'))
+
+        senha_armazenada = response.data[0]['senha']
+
+        if not check_password_hash(senha_armazenada, senha_atual):
+            flash("Senha atual incorreta.", "error")
+            return redirect(url_for('trocarSenha'))
+
+        if nova_senha != confirmar_nova_senha:
+            flash("A nova senha e a confirmação não coincidem.", "error")
+            return redirect(url_for('trocarSenha'))
+
+        nova_senha_hash = generate_password_hash(nova_senha, method='pbkdf2:sha256')
+        supabase.table('usuarios').update({'senha': nova_senha_hash}).eq('id', session['usuario_id']).execute()
+
+        flash("Senha alterada com sucesso!", "success")
+        return redirect(url_for('perfil'))
+
+    return render_template('mudar_senha.html')
+
+
 @app.route('/logout')
 def logout():
     session.clear()
