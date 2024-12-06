@@ -196,10 +196,11 @@ def perfil():
         return redirect(url_for('login'))
 
     nome = session['nome']
+    email = session['email']
     foto_perfil = session.get('foto_perfil', None)
-    email = session.get('email', None)
+    usuario_id = session['usuario_id'] 
+    return render_template('perfil.html', nome=nome, foto_perfil=foto_perfil, email=email, id=usuario_id)
 
-    return render_template('perfil.html', nome=nome, foto_perfil=foto_perfil, email=email)
 
 @app.route('/upload_foto', methods=['POST'])
 def upload_foto():
@@ -247,17 +248,18 @@ def criar_conta():
             'senha': hashed_password
         }
         response = supabase.table('usuarios').insert(new_user).execute()
-        if response.error:  # vê se tem um erro
-            flash(f'Erro ao criar conta. Tente novamente. {response.error}', 'error')
+
+        if response.status_code != 200:
+            flash(f'Erro ao criar conta. Tente novamente. {response.data}', 'error')
         else:
             flash('Conta criada com sucesso!', 'success')
             return redirect(url_for('login'))
 
     return render_template('criarconta.html')
 
+
 @app.route('/partituras')
 def partituras():
-    #response = supabase.table('partituras').select('arquivo_url').execute()
     partituras = buscar_partituras()
     return jsonify(partituras)
 
