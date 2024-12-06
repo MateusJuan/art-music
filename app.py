@@ -4,6 +4,7 @@ from datetime import timedelta
 from supabase import create_client, Client
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
+from waitress import serve  # Importando o Waitress corretamente
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = os.urandom(24)
@@ -141,7 +142,7 @@ def partituras():
     partituras = response.data if response.data else []
     return jsonify(partituras)
 
-@app.route('/partituras/estilo/<estilo>')
+@app.route('/partituras/estilo/<estilo>') 
 def partituras_por_estilo(estilo):
     partituras = buscar_partituras(estilo)
     return jsonify(partituras)
@@ -183,5 +184,6 @@ def inserir_partitura():
 
     return render_template('inserir_partitura.html')
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# Usando o Waitress para rodar a aplicação
+if __name__ == "__main__":
+    serve(app, host="0.0.0.0", port=8080)
