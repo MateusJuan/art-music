@@ -14,7 +14,6 @@ dataclasses==0.6
 deprecation==2.1.0
 Flask==3.1.0
 frozenlist==1.5.0
-gotrue==2.11.0
 gunicorn==20.0.0
 h11==0.14.0
 h2==4.1.0
@@ -31,7 +30,6 @@ multidict==6.1.0
 packaging==24.2
 pluggy==1.5.0
 postgrest==0.18.0
-postgrest-py==0.4.0
 propcache==0.2.1
 py==1.11.0
 pydantic==2.10.3
