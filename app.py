@@ -18,16 +18,100 @@ url = "https://zhuyytyhkmahjohqbsqd.supabase.co"
 key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpodXl5dHloa21haGpvaHFic3FkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI4Nzg4NTMsImV4cCI6MjA0ODQ1NDg1M30.cyD6WqNNuGI4kPhtYSjBJ5TNennRxCnizcTrbRH-ufM"
 supabase: Client = create_client(url, key)
 
+# Função para fazer upload do arquivo
+def upload_file(file):
+    bucket_name = 'art-music'  # Nome do seu bucket
+    file_name = file.filename  # Nome do arquivo
+    file_path_in_bucket = f"files/{file_name}"  # Caminho do arquivo dentro do bucket
+
+    # Fazendo upload do arquivo
+    result = supabase.storage.from_(bucket_name).upload(file_path_in_bucket, file)
+    
+    if result.error:
+        return None, result.error
+    else:
+        return file_path_in_bucket, None
+    
+# Função para salvar o caminho do arquivo no banco de dados
+def save_file_path_to_db(file_path_in_bucket):
+    data = {'arquivo_path': file_path_in_bucket}
+    
+    # Salvando no banco de dados
+    result = supabase.from_('arquivos').insert([data]).execute()
+    
+    if result.error:
+        return result.error
+    return None
+
+# Função para gerar URL assinada com tempo de expiração personalizado
+def get_signed_url(file_path_in_bucket, expiration_time=604800):
+    bucket_name = 'art-music'  # Nome do seu bucket
+    
+    # Gerando URL assinada válida por um determinado tempo (em segundos)
+    signed_url_result = supabase.storage.from_(bucket_name).create_signed_url(file_path_in_bucket, expiration_time)
+    
+    if signed_url_result.error:
+        return None, signed_url_result.error
+    return signed_url_result.data['signed_url'], None
+
+# Rota para upload de arquivos
+@app.route('/upload', methods=['POST'])
+def upload():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+    
+    # Realizando o upload
+    file_path_in_bucket, error = upload_file(file)
+    
+    if error:
+        return jsonify({'error': str(error)}), 500
+    
+    # Salvando o caminho no banco de dados
+    error = save_file_path_to_db(file_path_in_bucket)
+
+    if error:
+        return jsonify({'error': str(error)}), 500
+    
+    return jsonify({'message': f'File {file.filename} carregado com sucesso!'}), 200
+
+# Rota para obter a URL assinada
+@app.route('/get_signed_url', methods=['GET'])
+def get_url():
+    file_path_in_bucket = request.args.get('file_path')
+    
+    if not file_path_in_bucket:
+        return jsonify({'error': 'file_path is required'}), 400
+    
+    # Tempo de expiração configurado
+    expiration_time = int(request.args.get('expiration_time', 604800))
+    
+    signed_url, error = get_signed_url(file_path_in_bucket, expiration_time=expiration_time)
+    
+    if error:
+        return jsonify({'error': str(error)}), 500
+    
+    return jsonify({'signed_url': signed_url}), 200
+
+# Exemplo de uso
+#file_path = 'caminho/do/seu/arquivo.jpg'  # Substitua pelo caminho real do arquivo
+#upload_file(file_path)
+
 def extrair_nome_arquivo(url):
     return url.split("/")[-1]
 
 app.jinja_env.filters['nome_arquivo'] = extrair_nome_arquivo
 
 def buscar_partituras(estilo=None):
+    query = supabase.table('partituras').select('arquivo_url')
     if estilo and estilo != 'Todos':
-        response = supabase.table('partituras').select('arquivo_url').eq('estilo_musical', estilo).execute()
-    else:
-        response = supabase.table('partituras').select('arquivo_url').execute()
+        query = query.eq('estilo_musical', estilo)
+    
+    response = query.execute()
     return response.data if response.data else []
 
 @app.route('/login', methods=['GET', 'POST'])
