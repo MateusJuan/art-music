@@ -9,14 +9,13 @@
     --texto_neuto_1:rgb(255,255,255);
     --texto_neutro_2:rgb(0, 0, 0);
 }
-
 .material-symbols-outlined {
-    font-variation-settings:
-    'FILL' 0,
-    'wght' 400,
-    'GRAD' 0,
-    'opsz' 24
-  }
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
   body{
     font-family: 'Times New Roman', Times, serif;
     align-items: center;
