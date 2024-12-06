@@ -1,24 +1,27 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/logins.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/art_music.ico') }}" type="image/x-icon">
     <title>Trocar Senha</title>
 </head>
 <body>
     <h1>Alterar Senha</h1>
-    <form method="POST" action="{{ url_for('trocarSenha') }}">
-        <label for="senha_atual">Senha Atual:</label>
-        <input type="password" id="senha_atual" name="senha_atual" required>
+    <div>
+        <form method="POST" action="{{ url_for('trocarSenha') }}">
+            <label for="senha_atual">Senha Atual:</label>
+            <input type="password" id="senha"  name="senha_atual" required>
         
-        <label for="nova_senha">Nova Senha:</label>
-        <input type="password" id="nova_senha" name="nova_senha" required>
+            <label for="nova_senha">Nova Senha:</label>
+            <input type="password" id="senha"  name="nova_senha" required>
         
-        <label for="confirmar_nova_senha">Confirmar Nova Senha:</label>
-        <input type="password" id="confirmar_nova_senha" name="confirmar_nova_senha" required>
-        
-        <button type="submit">Alterar Senha</button>
-    </form>
+            <label for="confirmar_nova_senha">Confirmar Nova Senha:</label>
+            <input type="password" id="senha"  name="confirmar_nova_senha" required><br><br>
+            <button type="submit" id="submit">Alterar Senha</button>
+        </form>
+    </div>
     <a href="{{ url_for('perfil') }}">Voltar ao Perfil</a>
 </body>
 </html>
