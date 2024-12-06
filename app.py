@@ -13,7 +13,6 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
 url = "https://zhuyytyhkmahjohqbsqd.supabase.co"
 key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpodXl5dHloa21haGpvaHFic3FkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI4Nzg4NTMsImV4cCI6MjA0ODQ1NDg1M30.cyD6WqNNuGI4kPhtYSjBJ5TNennRxCnizcTrbRH-ufM"
 supabase: Client = create_client(url, key)
@@ -248,7 +247,7 @@ def criar_conta():
         response = supabase.table('usuarios').insert(new_user).execute()
 
         if response.error_message: # erro por causa do error_message
-            flash('Erro ao criar conta. Tente novamente.', 'error')
+            flash('Erro ao criar conta. Tente novamente,{e}',)
         else:
             flash('Conta criada com sucesso!', 'success')
             return redirect(url_for('login'))
