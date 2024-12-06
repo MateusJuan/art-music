@@ -27,8 +27,8 @@ def upload_file(file):
     # Fazendo upload do arquivo
     result = supabase.storage.from_(bucket_name).upload(file_path_in_bucket, file)
     
-    if result.error:
-        return None, result.error
+    if result.error_message:
+        return None, result.error_message
     else:
         return file_path_in_bucket, None
     
@@ -39,8 +39,8 @@ def save_file_path_to_db(file_path_in_bucket):
     # Salvando no banco de dados
     result = supabase.from_('arquivos').insert([data]).execute()
     
-    if result.error:
-        return result.error
+    if result.error_message:
+        return result.error_message
     return None
 
 # Função para gerar URL assinada com tempo de expiração personalizado
@@ -50,8 +50,8 @@ def get_signed_url(file_path_in_bucket, expiration_time=604800):
     # Gerando URL assinada válida por um determinado tempo (em segundos)
     signed_url_result = supabase.storage.from_(bucket_name).create_signed_url(file_path_in_bucket, expiration_time)
     
-    if signed_url_result.error:
-        return None, signed_url_result.error
+    if signed_url_result.error_message:
+        return None, signed_url_result.error_message
     return signed_url_result.data['signed_url'], None
 
 # Rota para upload de arquivos
@@ -247,11 +247,11 @@ def criar_conta():
         }
         response = supabase.table('usuarios').insert(new_user).execute()
 
-        if response.status_code == 201:
+        if response.error_message:
+            flash('Erro ao criar conta. Tente novamente.', 'error')
+        else:
             flash('Conta criada com sucesso!', 'success')
             return redirect(url_for('login'))
-        else:
-            flash('Erro ao criar conta. Tente novamente.', 'error')
 
     return render_template('criarconta.html')
 
