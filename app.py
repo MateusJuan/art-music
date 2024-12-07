@@ -2,8 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 import os
 from datetime import timedelta
 from supabase import create_client, Client
-from werkzeug.utils import secure_filename
-from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = os.urandom(24)
