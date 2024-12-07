@@ -12,6 +12,7 @@ deprecation==2.1.0
 Flask==3.1.0
 frozenlist==1.5.0
 gotrue==2.11.0
+gunicorn
 h11==0.14.0
 h2==4.1.0
 hpack==4.0.0
