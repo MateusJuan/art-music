@@ -2,8 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 import os
 from datetime import timedelta
 from supabase import create_client, Client
-from werkzeug.security import check_password_hash
-
+from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = os.urandom(24)
@@ -12,8 +12,10 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-url = "https://zhuyytyhkmahjohqbsqd.supabase.co"
-key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpodXl5dHloa21haGpvaHFic3FkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI4Nzg4NTMsImV4cCI6MjA0ODQ1NDg1M30.cyD6WqNNuGI4kPhtYSjBJ5TNennRxCnizcTrbRH-ufM"
+
+url = os.getenv("SUPABASE_URL", "https://zhuyytyhkmahjohqbsqd.supabase.co")
+key = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpodXl5dHloa21haGpvaHFic3FkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI4Nzg4NTMsImV4cCI6MjA0ODQ1NDg1M30.cyD6WqNNuGI4kPhtYSjBJ5TNennRxCnizcTrbRH-ufM")
+
 supabase: Client = create_client(url, key)
 
 def upload_file(file):
@@ -28,7 +30,6 @@ def upload_file(file):
     else:
         return file_path_in_bucket, None
 
-    
 def save_file_path_to_db(file_path_in_bucket):
     data = {'arquivo_path': file_path_in_bucket}
     
@@ -38,16 +39,14 @@ def save_file_path_to_db(file_path_in_bucket):
         return result.error
     return None
 
-
 def get_signed_url(file_path_in_bucket, expiration_time=604800):
-    bucket_name = 'art-music' 
-    
+    bucket_name = 'art-music'
+
     signed_url_result = supabase.storage.from_(bucket_name).create_signed_url(file_path_in_bucket, expiration_time)
     
     if signed_url_result.error:
         return None, signed_url_result.error
     return signed_url_result.data['signed_url'], None
-
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -93,7 +92,7 @@ def extrair_nome_arquivo(url):
 app.jinja_env.filters['nome_arquivo'] = extrair_nome_arquivo
 
 def buscar_partituras(estilo=None):
-    query = supabase.table('partituras').select('arquivo_url')
+    query = supabase.table('partituras').select('arquivo_pdf')
     if estilo and estilo != 'Todos':
         query = query.eq('estilo_musical', estilo)
     
@@ -130,7 +129,6 @@ def home():
     nome = session['nome']
     foto_perfil = session.get('foto_perfil', None)
 
-    response = supabase.table('partituras').select('arquivo_url').execute()
     partituras = buscar_partituras()
 
     return render_template('index.html', nome=nome, foto_perfil=foto_perfil, partituras=partituras)
@@ -169,7 +167,6 @@ def trocarSenha():
 
     return render_template('mudar_senha.html')
 
-
 @app.route('/logout')
 def logout():
     session.clear()
@@ -185,7 +182,6 @@ def perfil():
     foto_perfil = session.get('foto_perfil', None)
     usuario_id = session['usuario_id'] 
     return render_template('perfil.html', nome=nome, foto_perfil=foto_perfil, email=email, id=usuario_id)
-
 
 @app.route('/upload_foto', methods=['POST'])
 def upload_foto():
@@ -234,8 +230,8 @@ def criar_conta():
         }
         response = supabase.table('usuarios').insert(new_user).execute()
 
-        if response.status_code != 200:
-            flash(f'Erro ao criar conta. Tente novamente. {response.data}', 'error')
+        if response.error:
+            flash(f'Erro ao criar conta. Tente novamente. {response.error.message}', 'error')
         else:
             flash('Conta criada com sucesso!', 'success')
             return redirect(url_for('login'))
@@ -245,8 +241,10 @@ def criar_conta():
 
 @app.route('/partituras')
 def partituras():
-    partituras = buscar_partituras()
-    return jsonify(partituras)
+    partituras = Partitura.query.all()
+
+    return render_template('partituras.html', partituras=partituras)
+
 
 @app.route('/partituras/estilo/<estilo>') 
 def partituras_por_estilo(estilo):
@@ -274,7 +272,7 @@ def inserir_partitura():
             
             new_partitura = {
                 'estilo_musical': estilo_musical,
-                'arquivo_url': file_url
+                'arquivo_pdf': file_url
             }
 
             response = supabase.table('partituras').insert(new_partitura).execute()

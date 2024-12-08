@@ -26,7 +26,6 @@
         <a href="{{ url_for('inserir_partitura') }}" class="abas_a1">
             <li class="abas">Inserir Partitura</li>
         </a>
-        
 
         <!-- Barra de pesquisa -->
         <div class="abas_pesquisar">
@@ -86,65 +85,24 @@
         </select>
     </ul>
 
-    <!-- Exibição das partituras -->
-    <div class="partituras-container">
-        <h2>Partituras Disponíveis</h2>
-        <ul class="partituras-list" id="partiturasList">
-            {% if partituras %}
-            {% for partitura in partituras %}
-            {% set arquivo_url = partitura['arquivo_url'] %}
-            {% set filename = arquivo_url.split('/')[-1] %}
-            <li class="partitura-item">
-                <a href="{{ url_for('static', filename='PDF_PARTITURAS/' ~ filename) }}" target="_blank">
-                    {{ filename }}
-                </a>
-            </li>
-            {% endfor %}
+<div class="partituras-container">
+    <h2>Partituras Disponíveis</h2>
+    <ul class="partituras-list" id="partiturasList">
+        {% for partitura in partituras %}
+            {% if partitura.arquivo_url %}
+                <li class="partitura-item">
+                    <a href="{{ url_for('static', filename='PDF_PARTITURAS/' + partitura.arquivo_url) }}" target="_blank">
+                        {{ partitura.arquivo_url }}
+                    </a>
+                </li>
             {% else %}
-            <li class="partitura-item">Nenhuma partitura disponível no momento.</li>
+                <li class="partitura-item">Arquivo não disponível</li>
             {% endif %}
-        </ul>
-    </div>
+        {% endfor %}
+    </ul>
+</div>
 
-    <script>
-        // Função para filtrar as partituras conforme a pesquisa
-        function filtrarPartituras() {
-            const pesquisa = document.getElementById("campoPesquisa").value.toLowerCase();
-            const partituras = document.querySelectorAll(".partitura-item");
-            const sugestoes = document.getElementById("sugestoes");
-
-            // Limpa as sugestões antigas
-            sugestoes.innerHTML = '';
-
-            partituras.forEach(function (partitura) {
-                const nomeArquivo = partitura.querySelector('a').textContent.toLowerCase();
-
-                // Se a partitura não corresponder à pesquisa, oculta-a
-                if (nomeArquivo.includes(pesquisa)) {
-                    partitura.style.display = 'block';
-                } else {
-                    partitura.style.display = 'none';
-                }
-            });
-        }
-
-        // Função para realizar a pesquisa completa
-        function pesquisar(event) {
-            event.preventDefault();
-            const pesquisa = document.getElementById("campoPesquisa").value;
-            if (pesquisa) {
-                const urlPartitura = "{{ url_for('static', filename='PDF_PARTITURAS/') }}" + encodeURIComponent(pesquisa);
-                const link = document.createElement('a');
-                link.href = urlPartitura;
-                link.target = '_blank'; // Isso garante que o PDF será aberto em uma nova guia
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link); // Remove o link temporário após clicar
-            }
-        }
-    </script>
-
-    <script src="abas.js"></script>
+    <script src="{{ url_for('static', filename='js/abas.js') }}"></script>
 </body>
 
 </html>
