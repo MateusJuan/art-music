@@ -11,7 +11,7 @@
 <body>
     <ul class="abas_ul">
         <!-- Links de navegação -->
-        <a href="{{ url_for('partituras_por_estilo', estilo='Todos') }}" class="abas_a" id="abas_a1">
+        <a href="#" class="abas_a" id="abas_a1">
             <li class="abas">Partituras</li>
         </a>
         <a href="cifras.html" class="abas_a" id="abas_a2">
@@ -20,7 +20,7 @@
         <a href="#" class="abas_a" id="abas_a3">
             <li class="abas">Tablaturas</li>
         </a>
-        <a href="{{ url_for('inserir_partitura') }}" class="abas_a1">Inserir Partitura</a>
+        <!--<a href="{{ url_for('inserir_partitura') }}" class="abas_a1">Inserir Partitura</a>-->
 
         <!-- Barra de pesquisa -->
         <div class="abas_pesquisar">
@@ -59,13 +59,13 @@
     <!-- Menu de estilos de partituras -->
     <ul class="tipos_ul">
         <li class="tipos_li" id="todos_li1">
-            <a href="{{ url_for('partituras_por_estilo', estilo='Todos') }}" class="abas_a" id="abas_a1">Todas as Partituras</a>
+            <a href="#" class="abas_a" id="abas_a1">Todas as Partituras</a>
         </li>
         <li class="tipos_li">
-            <a href="{{ url_for('partituras_por_estilo', estilo='Gospel/Religioso') }}">Gospel/Religioso</a>
+            <a href="#">Gospel/Religioso</a>
         </li>
         <li class="tipos_li">
-            <a href="{{ url_for('partituras_por_estilo', estilo='Rock') }}">Rock</a>
+            <a href="#">Rock</a>
         </li>
         <select name="Mais" id="mais_estilos">
             <option value="0">Mais</option>
@@ -74,9 +74,10 @@
             <option value="3">Clássica</option>
         </select>
     </ul>
-
+    
+    <!-- Conteúdo principal (apenas estrutura básica mantida) -->
     <div class="partituras-container">
-        <h2>{{ estilo }}</h2>
+        <h2>Partituras</h2>
         <table>
             <thead>
                 <tr>
@@ -86,19 +87,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for partitura in partituras %}
-                    <tr>
-                        <td>{{ partitura.banda_grupo }}</td>
-                        <td>
-                            <a href="{{ url_for('static', filename='PDF_PARTITURAS/' + partitura.arquivo_pdf) }}" target="_blank">
-                                {{ partitura.arquivo_pdf.split('/')[-1] }}
-                            </a>
-                        </td>
-                        <td>{{ partitura.quantidade }}</td>
-                    </tr>
-                {% else %}
-                    <tr><td colspan="3">Nenhuma partitura encontrada.</td></tr>
-                {% endfor %}
+                <tr><td colspan="3">Nenhuma partitura disponível no momento.</td></tr>
             </tbody>
         </table>
     </div>
