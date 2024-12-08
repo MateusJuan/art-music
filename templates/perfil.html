@@ -15,19 +15,6 @@
 <body>
     <h1>Perfil do Usuário</h1>
 
-    {% if foto_perfil %}
-        <p><strong>Foto de Perfil:</strong></p>
-        <img src="{{ url_for('static', filename=foto_perfil) }}" alt="Foto de Perfil" width="150" class="foto_perfil">
-    {% else %}
-        <p>Você ainda não tem uma foto de perfil.</p>
-    {% endif %}
-
-    <form action="{{ url_for('upload_foto') }}" method="POST" enctype="multipart/form-data">
-        <label for="foto_perfil">Escolha uma foto de perfil:</label><br>
-        <input type="file" name="foto_perfil" accept="image/*">
-        <button type="submit" id="submit">Enviar Foto</button>
-    </form>
-
     {% if nome %}
         <p><strong>ID:</strong> {{ id }}</p>
         <p><strong>Nome:</strong> {{ nome }}</p>
@@ -45,7 +32,7 @@
     <a href="{{ url_for('home') }}">
         <span class="material-symbols-outlined">
             home
-            </span>
+        </span>
         Voltar para a home
     </a>
 </body>
