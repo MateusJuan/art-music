@@ -5,14 +5,12 @@ from supabase import create_client, Client
 from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv
 
-# Carregar variáveis de ambiente de um arquivo .env
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 
-# Configuração do Supabase
 url = os.getenv("SUPABASE_URL", "https://zhuyytyhkmahjohqbsqd.supabase.co")
 key = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpodXl5dHloa21haGpvaHFic3FkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI4Nzg4NTMsImV4cCI6MjA0ODQ1NDg1M30.cyD6WqNNuGI4kPhtYSjBJ5TNennRxCnizcTrbRH-ufM")
 supabase: Client = create_client(url, key)
@@ -129,21 +127,18 @@ def perfil():
     usuario_id = session['usuario_id']
     return render_template('perfil.html', nome=nome, email=email, id=usuario_id)
 
-
 @app.route('/inserir_partitura', methods=['GET', 'POST'])
 def inserir_partitura():
     if request.method == 'POST':
-        # Lógica para lidar com a inserção de partitura
         titulo = request.form['titulo']
         compositor = request.form['compositor']
         genero = request.form['genero']
 
-        # Exemplo de dados a serem inseridos no banco
         dados_partitura = {
             'titulo': titulo,
             'compositor': compositor,
             'genero': genero,
-            'usuario_id': session['usuario_id'],  # Associa à conta do usuário logado
+            'usuario_id': session['usuario_id'],
         }
 
         try:
