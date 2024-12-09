@@ -3,10 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/logins.css') }}">
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/logins.css') }}">-->
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/art_music.ico') }}" type="image/x-icon">
     <title>Login</title>
     <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+
+
+    <style>
+/*Modo CLaro*/
+:root{
+    --fundo_de_tela:rgb(236,235,233);
+    --botao_1:rgb(176,152,111);
+    --botao_2:rgb(107,84,56);
+    --texto_principal:rgb(69,67,66);
+    --texto_secundario:rgb(107,84,56);
+    --text_botao:rgb(236,235,233);
+    --texto_neutro_1: rgb(255,255,255);
+    --texto_neutro_2:rgb(0, 0, 0);
+}
+
+
+body{
+    font-family: 'Times New Roman', Times, serif;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    background-color:var(--fundo_de_tela);
+    color: var(--texto_neutro_2);
+}
+div{
+    background-color: rgba(255, 255, 255, 0.9);
+    position: absolute;
+    border-radius: 15px;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%,50%);
+    padding: 80px;
+    text-align: center;
+    width: 250px;
+}
+input{
+    background-color: rgba(0, 0, 0, 0.9);
+    border-radius: 15px;
+    border: none;
+    padding: 5px;
+    outline: none;
+    width: 200px;
+    color:var(--texto_neutro_1);
+}
+input::placeholder{
+    color: var(--texto_neutro_1);
+}
+#submit{
+    color: var(--text_botao);
+    font-weight: bold;
+    cursor: pointer;
+    background-color: var(--botao_2);
+    width: 210px;
+    border-radius: 15px;
+    border:none;
+    padding: 5px;
+}
+a{
+    text-decoration: none;
+    color: var(--texto_secundario);
+}
+    </style>
 </head>
 <body>
     <div>

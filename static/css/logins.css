@@ -37,10 +37,10 @@ input{
     padding: 5px;
     outline: none;
     width: 200px;
-    color:var(--texto_neuto_1);
+    color:var(--texto_neutro_1);
 }
 input::placeholder{
-    color: var(--texto_neuto_1);
+    color: var(--texto_neutro_1);
 }
 #submit{
     color: var(--text_botao);
