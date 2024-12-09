@@ -1,31 +1,30 @@
-from flask import Flask
-from flask import render_template
-from flask import request
-from flask import redirect
-from flask import url_for
-from flask import session
-from flask import flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import os
 from datetime import timedelta
 from supabase import create_client, Client
 from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv
 
+# Carregar variáveis de ambiente
 load_dotenv()
 
-app = Flask(__name__)
+# Configuração do Flask
+app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = os.urandom(24)
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 
+# Configuração do Supabase
 url = os.getenv("SUPABASE_URL", "https://zhuyytyhkmahjohqbsqd.supabase.co")
 key = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpodXl5dHloa21haGpvaHFic3FkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI4Nzg4NTMsImV4cCI6MjA0ODQ1NDg1M30.cyD6WqNNuGI4kPhtYSjBJ5TNennRxCnizcTrbRH-ufM")
 supabase: Client = create_client(url, key)
 
+# Middleware para verificar login
 @app.before_request
 def verificar_login():
     if 'nome' not in session and request.endpoint not in ['login', 'criar_conta']:
         return redirect(url_for('login'))
 
+# Rota para criar conta
 @app.route('/criar_conta', methods=['GET', 'POST'])
 def criar_conta():
     if request.method == 'POST':
@@ -44,8 +43,8 @@ def criar_conta():
             return redirect(url_for('criar_conta'))
 
         senha_hash = generate_password_hash(senha)
-
         data = {'nome': nome, 'email': email, 'senha': senha_hash}
+
         try:
             supabase.table('usuarios').insert([data]).execute()
             flash("Conta criada com sucesso!", "success")
@@ -56,6 +55,7 @@ def criar_conta():
 
     return render_template('criarconta.html')
 
+# Rota para login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -77,6 +77,7 @@ def login():
     
     return render_template('login.html')
 
+# Rota para home
 @app.route('/')
 def home():
     if 'nome' not in session:
@@ -85,6 +86,7 @@ def home():
     nome = session['nome']
     return render_template('index.html', nome=nome)
 
+# Rota para trocar senha
 @app.route('/trocarSenha', methods=['GET', 'POST'])
 def trocarSenha():
     if 'usuario_id' not in session:
@@ -117,12 +119,14 @@ def trocarSenha():
 
     return render_template('mudar_senha.html')
 
+# Rota para logout
 @app.route('/logout')
 def logout():
     session.clear()
     flash("Você foi desconectado com sucesso.", "success")
     return redirect(url_for('login'))
 
+# Rota para perfil
 @app.route('/perfil')
 def perfil():
     if 'nome' not in session:
@@ -133,6 +137,7 @@ def perfil():
     usuario_id = session['usuario_id']
     return render_template('perfil.html', nome=nome, email=email, id=usuario_id)
 
+# Rota para inserir partitura
 @app.route('/inserir_partitura', methods=['GET', 'POST'])
 def inserir_partitura():
     if request.method == 'POST':
@@ -157,5 +162,6 @@ def inserir_partitura():
 
     return render_template('inserir_partitura.html')
 
+# Executar aplicação
 if __name__ == '__main__':
     app.run(debug=True)
