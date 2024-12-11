@@ -162,6 +162,229 @@ def inserir_partitura():
 
     return render_template('inserir_partitura.html')
 
+@app.route('/partituras')
+def partituras():
+    if 'usuario_id' not in session:
+        return redirect(url_for('login'))
+
+    try:
+        response = supabase.table('partituras').select('*').eq('usuario_id', session['usuario_id']).execute()
+        partituras = response.data if response.data else []
+    except Exception as e:
+        flash(f"Erro ao carregar partituras: {str(e)}", "error")
+        partituras = []
+
+    return render_template('partituras.html', partituras=partituras)
+
+@app.route('/adicionar_partitura', methods=['GET', 'POST'])
+def adicionar_partitura():
+    if request.method == 'POST':
+        nome = request.form['nome']
+        descricao = request.form['descricao']
+        estilo_musical = request.form['estilo_musical']
+        quantidade = request.form.get('quantidade', 0)
+
+        dados_partitura = {
+            'nome': nome,
+            'descricao': descricao,
+            'estilo_musical': estilo_musical,
+            'quantidade': quantidade,
+        }
+
+        try:
+            supabase.table('partituras').insert([dados_partitura]).execute()
+            flash("Partitura adicionada com sucesso!", "success")
+            return redirect(url_for('partituras'))
+        except Exception as e:
+            flash(f"Erro ao adicionar partitura: {str(e)}", "error")
+            return redirect(url_for('adicionar_partitura'))
+
+    return render_template('adicionar_partitura.html')
+
+@app.route('/editar_partitura/<int:id>', methods=['GET', 'POST'])
+def editar_partitura(id):
+    if request.method == 'POST':
+        nome = request.form['nome']
+        descricao = request.form['descricao']
+        estilo_musical = request.form['estilo_musical']
+        quantidade = request.form.get('quantidade', 0)
+
+        try:
+            supabase.table('partituras').update({
+                'nome': nome,
+                'descricao': descricao,
+                'estilo_musical': estilo_musical,
+                'quantidade': quantidade
+            }).eq('id', id).execute()
+            flash("Partitura atualizada com sucesso!", "success")
+            return redirect(url_for('partituras'))
+        except Exception as e:
+            flash(f"Erro ao atualizar partitura: {str(e)}", "error")
+            return redirect(url_for('editar_partitura', id=id))
+
+    try:
+        response = supabase.table('partituras').select('*').eq('id', id).execute()
+        partitura = response.data[0] if response.data else None
+        if not partitura:
+            flash("Partitura não encontrada.", "error")
+            return redirect(url_for('partituras'))
+    except Exception as e:
+        flash(f"Erro ao buscar partitura: {str(e)}", "error")
+        return redirect(url_for('partituras'))
+
+    return render_template('editar_partitura.html', partitura=partitura)
+
+
+@app.route('/excluir_partitura/<int:id>', methods=['POST'])
+def excluir_partitura(id):
+    try:
+        supabase.table('partituras').delete().eq('id', id).execute()
+        flash("Partitura excluída com sucesso!", "success")
+    except Exception as e:
+        flash(f"Erro ao excluir partitura: {str(e)}", "error")
+
+    return redirect(url_for('partituras'))
+
+
+@app.route('/cifras')
+def cifras():
+    if 'usuario_id' not in session:
+        return redirect(url_for('login'))
+    
+    return render_template('cifras.html')
+
+@app.route('/adicionar_cifra', methods=['GET', 'POST'])
+def adicionar_cifra():
+    if request.method == 'POST':
+        estilo_musical = request.form['estilo_musical']
+        arquivo_url = request.form['arquivo_url']
+
+        dados_cifra = {
+            'estilo_musical': estilo_musical,
+            'arquivo_url': arquivo_url
+        }
+
+        try:
+            supabase.table('cifras').insert([dados_cifra]).execute()
+            flash("Cifra adicionada com sucesso!", "success")
+            return redirect(url_for('cifras'))
+        except Exception as e:
+            flash(f"Erro ao adicionar cifra: {str(e)}", "error")
+            return redirect(url_for('adicionar_cifra'))
+
+    return render_template('adicionar_cifra.html')
+
+
+@app.route('/editar_cifra/<int:id>', methods=['GET', 'POST'])
+def editar_cifra(id):
+    if request.method == 'POST':
+        estilo_musical = request.form['estilo_musical']
+        arquivo_url = request.form['arquivo_url']
+
+        try:
+            supabase.table('cifras').update({
+                'estilo_musical': estilo_musical,
+                'arquivo_url': arquivo_url
+            }).eq('id', id).execute()
+            flash("Cifra atualizada com sucesso!", "success")
+            return redirect(url_for('cifras'))
+        except Exception as e:
+            flash(f"Erro ao atualizar cifra: {str(e)}", "error")
+            return redirect(url_for('editar_cifra', id=id))
+
+    try:
+        response = supabase.table('cifras').select('*').eq('id', id).execute()
+        cifra = response.data[0] if response.data else None
+        if not cifra:
+            flash("Cifra não encontrada.", "error")
+            return redirect(url_for('cifras'))
+    except Exception as e:
+        flash(f"Erro ao buscar cifra: {str(e)}", "error")
+        return redirect(url_for('cifras'))
+
+    return render_template('editar_cifra.html', cifra=cifra)
+
+
+@app.route('/excluir_cifra/<int:id>', methods=['POST'])
+def excluir_cifra(id):
+    try:
+        supabase.table('cifras').delete().eq('id', id).execute()
+        flash("Cifra excluída com sucesso!", "success")
+    except Exception as e:
+        flash(f"Erro ao excluir cifra: {str(e)}", "error")
+
+    return redirect(url_for('cifras'))
+
+
+@app.route('/tablaturas')
+def tablaturas():
+    if 'usuario_id' not in session:
+        return redirect(url_for('login'))
+    
+    return render_template('tablaturas.html')
+
+@app.route('/adicionar_tablatura', methods=['GET', 'POST'])
+def adicionar_tablatura():
+    if request.method == 'POST':
+        estilo_musical = request.form['estilo_musical']
+        arquivo_url = request.form['arquivo_url']
+
+        dados_tablatura = {
+            'estilo_musical': estilo_musical,
+            'arquivo_url': arquivo_url
+        }
+
+        try:
+            supabase.table('tablaturas').insert([dados_tablatura]).execute()
+            flash("Tablatura adicionada com sucesso!", "success")
+            return redirect(url_for('tablaturas'))
+        except Exception as e:
+            flash(f"Erro ao adicionar tablatura: {str(e)}", "error")
+            return redirect(url_for('adicionar_tablatura'))
+
+    return render_template('adicionar_tablatura.html')
+
+@app.route('/editar_tablatura/<int:id>', methods=['GET', 'POST'])
+def editar_tablatura(id):
+    if request.method == 'POST':
+        estilo_musical = request.form['estilo_musical']
+        arquivo_url = request.form['arquivo_url']
+
+        try:
+            supabase.table('tablaturas').update({
+                'estilo_musical': estilo_musical,
+                'arquivo_url': arquivo_url
+            }).eq('id', id).execute()
+            flash("Tablatura atualizada com sucesso!", "success")
+            return redirect(url_for('tablaturas'))
+        except Exception as e:
+            flash(f"Erro ao atualizar tablatura: {str(e)}", "error")
+            return redirect(url_for('editar_tablatura', id=id))
+
+    try:
+        response = supabase.table('tablaturas').select('*').eq('id', id).execute()
+        tablatura = response.data[0] if response.data else None
+        if not tablatura:
+            flash("Tablatura não encontrada.", "error")
+            return redirect(url_for('tablaturas'))
+    except Exception as e:
+        flash(f"Erro ao buscar tablatura: {str(e)}", "error")
+        return redirect(url_for('tablaturas'))
+
+    return render_template('editar_tablatura.html', tablatura=tablatura)
+
+
+@app.route('/excluir_tablatura/<int:id>', methods=['POST'])
+def excluir_tablatura(id):
+    try:
+        supabase.table('tablaturas').delete().eq('id', id).execute()
+        flash("Tablatura excluída com sucesso!", "success")
+    except Exception as e:
+        flash(f"Erro ao excluir tablatura: {str(e)}", "error")
+
+    return redirect(url_for('tablaturas'))
+
+
 # Executar aplicação
 if __name__ == '__main__':
     app.run(debug=True)

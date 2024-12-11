@@ -11,16 +11,15 @@
 <body>
     <ul class="abas_ul">
         <!-- Links de navegação -->
-        <a href="#" class="abas_a" id="abas_a1">
+        <a href="{{ url_for('partituras') }}" class="abas_a" id="abas_a1">
             <li class="abas">Partituras</li>
         </a>
-        <a href="cifras.html" class="abas_a" id="abas_a2">
+        <a href="{{url_for('cifras')}}" class="abas_a" id="abas_a2">
             <li class="abas">Cifras</li>
         </a>
-        <a href="#" class="abas_a" id="abas_a3">
+        <a href="{{url_for('tablaturas')}}" class="abas_a" id="abas_a3">
             <li class="abas">Tablaturas</li>
         </a>
-        <!--<a href="{{ url_for('inserir_partitura') }}" class="abas_a1">Inserir Partitura</a>-->
 
         <!-- Barra de pesquisa -->
         <div class="abas_pesquisar">
@@ -74,24 +73,6 @@
             <option value="3">Clássica</option>
         </select>
     </ul>
-    
-    <!-- Conteúdo principal (apenas estrutura básica mantida) -->
-    <div class="partituras-container">
-        <h2>Partituras</h2>
-        <table>
-            <thead>
-                <tr>
-                    <td>Banda/Grupo</td>
-                    <td>Partitura</td>
-                    <td>Quantidade</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td colspan="3">Nenhuma partitura disponível no momento.</td></tr>
-            </tbody>
-        </table>
-    </div>
-    
-    <script src="{{ url_for('static', filename='js/abas.js') }}"></script>
+
 </body>
 </html>

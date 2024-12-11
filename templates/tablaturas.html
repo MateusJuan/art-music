@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-    <title>Cifras</title>
+    <title>Tablaturas</title>
 </head>
 <body>
     <ul class="abas_ul">
@@ -15,20 +15,20 @@
             <li class="abas">Partituras</li>
         </a>
         <a href="{{ url_for('cifras') }}" class="abas_a" id="abas_a3">
-            <li class="abas active">Cifras</li>
+            <li class="abas">Cifras</li>
         </a>
         <a href="{{ url_for('tablaturas') }}" class="abas_a" id="abas_a4">
-            <li class="abas">Tablaturas</li>
+            <li class="abas active">Tablaturas</li>
         </a>
     </ul>
     
 
     <hr>
 
-    <!-- Conteúdo principal: Tabela de Cifras -->
-    <div class="cifras-container">
-        <h2>Cifras Disponíveis</h2>
-        {% if cifras %}
+    <!-- Conteúdo principal: Tabela de Tablaturas -->
+    <div class="tablaturas-container">
+        <h2>Tablaturas Disponíveis</h2>
+        {% if tablaturas %}
         <table>
             <thead>
                 <tr>
@@ -38,17 +38,17 @@
                 </tr>
             </thead>
             <tbody>
-                {% for cifra in cifras %}
+                {% for tablatura in tablaturas %}
                 <tr>
-                    <td>{{ cifra['titulo'] }}</td>
-                    <td>{{ cifra['artista'] }}</td>
-                    <td>{{ cifra['genero'] }}</td>
+                    <td>{{ tablatura['titulo'] }}</td>
+                    <td>{{ tablatura['artista'] }}</td>
+                    <td>{{ tablatura['genero'] }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
         {% else %}
-        <p>Nenhuma cifra disponível no momento.</p>
+        <p>Nenhuma tablatura disponível no momento.</p>
         {% endif %}
     </div>
 

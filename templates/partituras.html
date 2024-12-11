@@ -3,26 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Partituras - {{ estilo }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <title>Partituras</title>
 </head>
 <body>
-    <h1>Partituras de {{ estilo }}</h1>
+    <ul class="abas_ul">
+        <a href="{{ url_for('home') }}" class="abas_a" id="abas_a1">
+            <li class="abas">Home</li>
+        </a>
+        <a href="{{ url_for('partituras') }}" class="abas_a" id="abas_a2">
+            <li class="abas active">Partituras</li>
+        </a>
+        <a href="{{ url_for('cifras') }}" class="abas_a" id="abas_a3">
+            <li class="abas">Cifras</li>
+        </a>
+        <a href="{{ url_for('tablaturas') }}" class="abas_a" id="abas_a4">
+            <li class="abas">Tablaturas</li>
+        </a>
+    </ul>
+    
 
-    {% if partituras %}
-        <ul>
-            {% for partitura in partituras %}
-                {% set arquivo_url = partitura['arquivo_url'] %}
-                {% set filename = arquivo_url.split('/')[-1] %}
-                <li>
-                    <!-- Corrigido o caminho para static/PDF_PARTITURAS -->
-                    <a href="{{ url_for('static', filename='PDF_PARTITURAS/' ~ filename) }}" target="_blank">
-                        {{ filename }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Não há partituras disponíveis para o estilo "{{ estilo }}".</p>
-    {% endif %}
+
+    <hr>
+
+    <!-- Conteúdo principal: Tabela de Partituras -->
+    <div class="partituras-container">
+        <h2>Partituras Disponíveis</h2>
+        {% if partituras %}
+        <table>
+            <thead>
+                <tr>
+                    <td>Título</td>
+                    <td>Compositor</td>
+                    <td>Gênero</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for partitura in partituras %}
+                <tr>
+                    <td>{{ partitura['titulo'] }}</td>
+                    <td>{{ partitura['compositor'] }}</td>
+                    <td>{{ partitura['genero'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Nenhuma partitura disponível no momento.</p>
+        {% endif %}
+    </div>
+
+    <script src="{{ url_for('static', filename='js/abas.js') }}"></script>
 </body>
 </html>
