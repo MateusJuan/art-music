@@ -21,8 +21,6 @@
             <li class="abas">Tablaturas</li>
         </a>
     </ul>
-    
-
 
     <hr>
 
@@ -41,9 +39,9 @@
             <tbody>
                 {% for partitura in partituras %}
                 <tr>
-                    <td>{{ partitura['titulo'] }}</td>
-                    <td>{{ partitura['compositor'] }}</td>
-                    <td>{{ partitura['genero'] }}</td>
+                    <td>{{ partitura['nome'] }}</td>
+                    <td>{{ partitura['descricao'] }}</td>
+                    <td>{{ partitura['estilo_musical'] }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -53,6 +51,5 @@
         {% endif %}
     </div>
 
-    <script src="{{ url_for('static', filename='js/abas.js') }}"></script>
 </body>
 </html>

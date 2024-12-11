@@ -189,17 +189,23 @@ def adicionar_partitura():
             'descricao': descricao,
             'estilo_musical': estilo_musical,
             'quantidade': quantidade,
+            'usuario_id': session['usuario_id']
         }
 
         try:
             supabase.table('partituras').insert([dados_partitura]).execute()
             flash("Partitura adicionada com sucesso!", "success")
-            return redirect(url_for('partituras'))
+            
+            response = supabase.table('partituras').select('*').eq('usuario_id', session['usuario_id']).execute()
+            partituras = response.data if response.data else []
+            
+            return render_template('partituras.html', partituras=partituras)
         except Exception as e:
             flash(f"Erro ao adicionar partitura: {str(e)}", "error")
             return redirect(url_for('adicionar_partitura'))
 
     return render_template('adicionar_partitura.html')
+
 
 @app.route('/editar_partitura/<int:id>', methods=['GET', 'POST'])
 def editar_partitura(id):
