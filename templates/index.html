@@ -10,7 +10,6 @@
 </head>
 <body>
     <ul class="abas_ul">
-        <!-- Links de navegação -->
         <a href="{{ url_for('partituras') }}" class="abas_a" id="abas_a1">
             <li class="abas">Partituras</li>
         </a>
@@ -21,7 +20,6 @@
             <li class="abas">Tablaturas</li>
         </a>
 
-        <!-- Barra de pesquisa -->
         <div class="abas_pesquisar">
             <input type="text" id="campoPesquisa" placeholder="O que você deseja aprender ou tocar hoje?"
                 oninput="filtrarPartituras();">
@@ -31,12 +29,10 @@
             <ul id="sugestoes" class="sugestoes"></ul>
         </div>
 
-        <!-- Link para as listas -->
         <a href="#">
             <li class="abas">Minhas Listas</li>
         </a>
 
-        <!-- Perfil do usuário -->
         {% if nome %}
         <a href="{{ url_for('perfil') }}">
             <div class="perfil">
@@ -55,7 +51,6 @@
 
     <hr>
 
-    <!-- Menu de estilos de partituras -->
     <ul class="tipos_ul">
         <li class="tipos_li" id="todos_li1">
             <a href="#" class="abas_a" id="abas_a1">Todas as Partituras</a>
