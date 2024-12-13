@@ -30,7 +30,6 @@
     
     <hr>
 
-    <!-- Conteúdo principal: Tabela de Cifras -->
     <div class="cifras-container">
         <h2>Cifras Disponíveis</h2>
         {% if cifras %}
@@ -47,7 +46,7 @@
             <tbody>
                 {% for cifra in cifras %}
                 <tr>
-                    <td>{{ cifra['titulo'] }}</td>
+                    <td><a href="{{ url_for('ver_cifra', id=cifra['id']) }}">{{ cifra['titulo'] }}</a></td>
                     <td>{{ cifra['artista'] }}</td>
                     <td>{{ cifra['genero'] }}</td>
                     <td>{{ cifra['estilo_musical'] }}</td>
@@ -55,6 +54,7 @@
                 </tr>
                 {% endfor %}
             </tbody>
+            
         </table>
         {% else %}
         <p>Nenhuma cifra disponível no momento.</p>

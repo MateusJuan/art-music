@@ -1,0 +1,53 @@
+/*Modo CLaro*/
+:root{
+    --fundo_de_tela:rgb(236,235,233);
+    --botao_1:rgb(176,152,111);
+    --botao_2:rgb(107,84,56);
+    --texto_principal:rgb(69,67,66);
+    --texto_secundario:rgb(107,84,56);
+    --text_botao:rgb(236,235,233);
+    --texto_neuto_1:rgb(255,255,255);
+    --texto_neutro_2:rgb(0, 0, 0);
+}
+  body{
+    font-family: 'Times New Roman', Times, serif;
+    align-items: center;
+    justify-content: center;
+    background-color:var(--fundo_de_tela);
+    color: var(--texto_neutro_2);
+}
+  hr{
+      background-color: var(--botao_2);
+      height: 0.5px;
+  }
+  .abas_ul,li{
+      list-style-type: none;
+      display: flex;
+      justify-content: space-evenly;
+      padding: 7px;
+  }
+  a{
+      text-decoration: none;
+      color: var(--texto_principal);
+      cursor: pointer;
+  }
+  .abas:hover{
+      background-color: var(--botao_2);
+      border-radius: 15px;
+      color: var(--texto_neuto_1);
+      padding: 5px;
+      font-weight: bold;
+  }
+  select{
+      background-color:var(--botao_2);
+      border-radius: 15px;
+      cursor: pointer;
+  }
+  select::selection{
+      cursor: pointer;
+  }
+  table,thead,tr,td{
+      border: 1px solid var(--texto_neutro_2);
+      border-radius: 5px;
+      font-size: 30px;
+  }

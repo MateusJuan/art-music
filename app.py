@@ -303,14 +303,16 @@ def adicionar_cifra():
             artista = request.form['artista']
             genero = request.form['genero']
             estilo_musical = request.form['estilo_musical']
+            cifra = request.form['cifra']
 
-            print(f"Dados recebidos: {titulo}, {artista}, {genero}, {estilo_musical}")
+            print(f"Dados recebidos: {titulo}, {artista}, {genero}, {estilo_musical}, {cifra}")
 
             dados_cifra = {
                 'titulo': titulo,
                 'artista': artista,
                 'genero': genero,
-                'estilo_musical': estilo_musical
+                'estilo_musical': estilo_musical,
+                'cifra': cifra
             }
 
             response = supabase.table('cifras').insert([dados_cifra]).execute()
@@ -327,6 +329,18 @@ def adicionar_cifra():
             return redirect(url_for('adicionar_cifra'))
     
     return render_template('adicionar_cifra.html')
+
+
+@app.route('/ver_cifra/<int:id>', methods=['GET'])
+def ver_cifra(id):
+    response = supabase.table('cifras').select('*').eq('id', id).execute()
+
+    if response.data:
+        cifra = response.data[0]
+        return render_template('ver_cifra.html', cifra=cifra)
+    else:
+        flash("Cifra não encontrada", "error")
+        return redirect(url_for('cifras'))
 
 
 @app.route('/editar_cifra/<int:id>', methods=['GET', 'POST'])
