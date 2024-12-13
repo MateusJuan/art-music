@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Partitura</title>
+</head>
+<body>
+    <h1>Editar Partitura</h1>
+    <form action="{{ url_for('editar_partitura', id=partitura['id']) }}" method="POST">
+        <label for="nome">Nome:</label>
+        <input type="text" name="nome" value="{{ partitura['nome'] }}" required><br>
+
+        <label for="descricao">Descrição:</label>
+        <input type="text" name="descricao" value="{{ partitura['descricao'] }}" required><br>
+
+        <label for="estilo_musical">Estilo Musical:</label>
+        <input type="text" name="estilo_musical" value="{{ partitura['estilo_musical'] }}" required><br>
+
+        <label for="quantidade">Quantidade:</label>
+        <input type="number" name="quantidade" value="{{ partitura['quantidade'] }}" required><br>
+
+        <button type="submit">Salvar Alterações</button>
+    </form>
+</body>
+</html>

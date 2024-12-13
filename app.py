@@ -55,20 +55,27 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         senha = request.form['senha']
-        response = supabase.table('usuarios').select('id', 'email', 'senha', 'nome').eq('email', email).execute()
+        try:
+            response = supabase.table('usuarios').select('id', 'email', 'senha', 'nome').eq('email', email).execute()
 
-        if response.data:
-            usuario = response.data[0]
-            if check_password_hash(usuario['senha'], senha):
-                session['nome'] = usuario['nome']
-                session['usuario_id'] = usuario['id']
-                session['email'] = usuario['email']
-                return redirect(url_for('home'))
+            if response.data:
+                usuario = response.data[0]
+
+                if check_password_hash(usuario['senha'], senha):
+                    session['nome'] = usuario['nome']
+                    session['usuario_id'] = usuario['id']
+                    session['email'] = usuario['email']
+                    
+                    flash(f"Bem-vindo, {usuario['nome']}!", "success")
+                    return redirect(url_for('home'))
+                else:
+                    flash("Senha incorreta. Tente novamente.", "error")
             else:
-                flash("Senha incorreta.", "error")
-        else:
-            flash("Email não encontrado.", "error")
-    
+                flash("Email não encontrado. Verifique e tente novamente.", "error")
+        except Exception as e:
+            print("Erro ao realizar login:", str(e))
+            flash("Ocorreu um erro ao processar seu login. Tente novamente mais tarde.", "error")
+
     return render_template('login.html')
 
 @app.route('/')
@@ -167,11 +174,19 @@ def partituras():
 
 @app.route('/adicionar_partitura', methods=['GET', 'POST'])
 def adicionar_partitura():
+    if 'usuario_id' not in session:
+        flash("Você precisa estar logado para adicionar uma partitura.", "error")
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
         nome = request.form['nome']
         descricao = request.form['descricao']
         estilo_musical = request.form['estilo_musical']
-        quantidade = request.form.get('quantidade', 0)
+        try:
+            quantidade = int(request.form.get('quantidade', 0))
+        except ValueError:
+            flash("Quantidade deve ser um número válido.", "error")
+            return redirect(url_for('adicionar_partitura'))
 
         dados_partitura = {
             'nome': nome,
@@ -182,18 +197,27 @@ def adicionar_partitura():
         }
 
         try:
-            supabase.table('partituras').insert([dados_partitura]).execute()
+            response = supabase.table('partituras').insert([dados_partitura]).execute()
+            print("Supabase Insert Response:", response)
+
+            if response.get('status_code') != 201:
+                flash(f"Erro ao adicionar partitura: {response.get('error', 'Erro desconhecido')}", "error")
+                return redirect(url_for('adicionar_partitura'))
+
             flash("Partitura adicionada com sucesso!", "success")
             
             response = supabase.table('partituras').select('*').eq('usuario_id', session['usuario_id']).execute()
             partituras = response.data if response.data else []
-            
+
             return render_template('partituras.html', partituras=partituras)
+
         except Exception as e:
+            print("Erro ao adicionar partitura:", str(e))
             flash(f"Erro ao adicionar partitura: {str(e)}", "error")
             return redirect(url_for('adicionar_partitura'))
 
     return render_template('adicionar_partitura.html')
+
 
 
 @app.route('/editar_partitura/<int:id>', methods=['GET', 'POST'])
