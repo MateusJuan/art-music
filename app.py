@@ -172,7 +172,7 @@ def partituras():
 
     return render_template('partituras.html', partituras=partituras)
 
-@app.route('/ver_pdf/<int:id>', methods=['GET'])
+'''@app.route('/ver_pdf/<int:id>', methods=['GET'])
 def ver_pdf(id):
     try:
         response = supabase.table('partituras').select('pdf_data').eq('id', id).execute()
@@ -190,7 +190,7 @@ def ver_pdf(id):
         )
     except Exception as e:
         flash(f"Erro ao buscar o PDF: {str(e)}", "error")
-        return redirect(url_for('partituras'))
+        return redirect(url_for('partituras'))'''
 
 
 @app.route('/adicionar_partitura', methods=['GET', 'POST'])
@@ -203,51 +203,38 @@ def adicionar_partitura():
         nome = request.form['nome']
         descricao = request.form['descricao']
         estilo_musical = request.form['estilo_musical']
+        
         try:
             quantidade = int(request.form.get('quantidade', 0))
         except ValueError:
             flash("Quantidade deve ser um número válido.", "error")
             return redirect(url_for('adicionar_partitura'))
 
-        if 'pdf' not in request.files or request.files['pdf'].filename == '':
-            flash("Por favor, selecione um arquivo PDF.", "error")
-            return redirect(url_for('adicionar_partitura'))
-
-        pdf_file = request.files['pdf']
-
-        if pdf_file and pdf_file.filename.endswith('.pdf'):
-            try:
-                pdf_data = pdf_file.read()
-            except Exception as e:
-                flash(f"Erro ao ler o arquivo PDF: {str(e)}", "error")
-                return redirect(url_for('adicionar_partitura'))
-        else:
-            flash("Arquivo inválido. Apenas arquivos PDF são permitidos.", "error")
-            return redirect(url_for('adicionar_partitura'))
-
-        dados_partitura = {
-            'nome': nome,
-            'descricao': descricao,
-            'estilo_musical': estilo_musical,
-            'quantidade': quantidade,
-            'pdf_data': pdf_data,
-            'usuario_id': session['usuario_id']
-        }
-
         try:
+            dados_partitura = {
+                'nome': nome,
+                'descricao': descricao,
+                'estilo_musical': estilo_musical,
+                'quantidade': quantidade,
+                'usuario_id': session['usuario_id'],
+            }
+
             response = supabase.table('partituras').insert([dados_partitura]).execute()
-            if response.get('status_code') != 201:
-                flash(f"Erro ao adicionar partitura: {response.get('error', 'Erro desconhecido')}", "error")
+
+            print("Resposta do Supabase:", response)
+            if response.status_code != 201:
+                flash(f"Erro ao adicionar partitura: {response.error}", "error")
                 return redirect(url_for('adicionar_partitura'))
 
             flash("Partitura adicionada com sucesso!", "success")
             return redirect(url_for('partituras'))
+
         except Exception as e:
             flash(f"Erro ao adicionar partitura: {str(e)}", "error")
             return redirect(url_for('adicionar_partitura'))
 
     return render_template('adicionar_partitura.html')
-('adicionar_partitura.html')
+
 
 
 @app.route('/editar_partitura/<int:id>', methods=['GET', 'POST'])
@@ -299,28 +286,46 @@ def excluir_partitura(id):
 def cifras():
     if 'usuario_id' not in session:
         return redirect(url_for('login'))
-    
-    return render_template('cifras.html')
+
+    try:
+        response = supabase.table('cifras').select('*').execute()
+        cifras = response.data
+        return render_template('cifras.html', cifras=cifras)
+    except Exception as e:
+        flash(f"Erro ao carregar cifras: {str(e)}", "error")
+        return render_template('cifras.html')
 
 @app.route('/adicionar_cifra', methods=['GET', 'POST'])
 def adicionar_cifra():
     if request.method == 'POST':
-        estilo_musical = request.form['estilo_musical']
-        arquivo_url = request.form['arquivo_url']
-
-        dados_cifra = {
-            'estilo_musical': estilo_musical,
-            'arquivo_url': arquivo_url
-        }
-
         try:
-            supabase.table('cifras').insert([dados_cifra]).execute()
-            flash("Cifra adicionada com sucesso!", "success")
-            return redirect(url_for('cifras'))
-        except Exception as e:
-            flash(f"Erro ao adicionar cifra: {str(e)}", "error")
-            return redirect(url_for('adicionar_cifra'))
+            titulo = request.form['titulo']
+            artista = request.form['artista']
+            genero = request.form['genero']
+            estilo_musical = request.form['estilo_musical']
 
+            print(f"Dados recebidos: {titulo}, {artista}, {genero}, {estilo_musical}")
+
+            dados_cifra = {
+                'titulo': titulo,
+                'artista': artista,
+                'genero': genero,
+                'estilo_musical': estilo_musical
+            }
+
+            response = supabase.table('cifras').insert([dados_cifra]).execute()
+
+            if response.status_code == 200:
+                flash("Cifra adicionada com sucesso!", "success")
+            else:
+                flash(f"Erro ao adicionar cifra: {response.error_message}", "error")
+                
+            return redirect(url_for('cifras'))
+        
+        except Exception as e:
+            flash(f"Erro ao processar os dados: {str(e)}", "error")
+            return redirect(url_for('adicionar_cifra'))
+    
     return render_template('adicionar_cifra.html')
 
 

@@ -17,7 +17,7 @@
             <li class="abas">Partituras</li>
         </a>
         <a href="{{ url_for('adicionar_partitura') }}">
-            <li class="abas">Adionar Nova Partitura</li>
+            <li class="abas">Adicionar Nova Partitura</li>
         </a>
         <a href="{{ url_for('cifras') }}" class="abas_a" id="abas_a3">
             <li class="abas">Cifras</li>
@@ -43,10 +43,7 @@
             <tbody>
                 {% for partitura in partituras %}
                 <tr>
-                    <td>
-                        <!-- Link para visualizar o PDF -->
-                        <a href="{{ url_for('ver_pdf', id=partitura['id']) }}" target="_blank">{{ partitura['nome'] }}</a>
-                    </td>
+                    <td>{{ partitura['nome'] }}</td> <!-- Removido o link para ver o PDF -->
                     <td>{{ partitura['descricao'] }}</td>
                     <td>{{ partitura['estilo_musical'] }}</td>
                     <td>
@@ -58,7 +55,6 @@
                 </tr>
                 {% endfor %}
             </tbody>
-            
         </table>
         {% else %}
         <p>Nenhuma partitura disponível no momento.</p>

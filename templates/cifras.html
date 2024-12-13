@@ -22,9 +22,12 @@
         <a href="{{ url_for('tablaturas') }}" class="abas_a" id="abas_a4">
             <li class="abas">Tablaturas</li>
         </a>
+        <a href="{{ url_for('adicionar_cifra') }}" class="abas_a" id="abas_a5">
+            <li class="abas">Adicionar Cifra</li>
+        </a>
     </ul>
     
-
+    
     <hr>
 
     <!-- Conteúdo principal: Tabela de Cifras -->
@@ -37,6 +40,8 @@
                     <td>Título</td>
                     <td>Artista</td>
                     <td>Gênero</td>
+                    <td>Estilo Musical</td>
+                    <td>Cifra</td>
                 </tr>
             </thead>
             <tbody>
@@ -45,6 +50,8 @@
                     <td>{{ cifra['titulo'] }}</td>
                     <td>{{ cifra['artista'] }}</td>
                     <td>{{ cifra['genero'] }}</td>
+                    <td>{{ cifra['estilo_musical'] }}</td>
+                    <td><a href="{{ cifra['arquivo_url'] }}" target="_blank">Ver Cifra</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
