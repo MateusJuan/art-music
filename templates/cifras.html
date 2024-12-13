@@ -50,7 +50,7 @@
                     <td>{{ cifra['artista'] }}</td>
                     <td>{{ cifra['genero'] }}</td>
                     <td>{{ cifra['estilo_musical'] }}</td>
-                    <td><a href="{{ cifra['arquivo_url'] }}" target="_blank">Ver Cifra</a></td>
+                    <td><a href="{{ url_for('ver_cifra', id=cifra['id']) }}">Ver Cifra</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
