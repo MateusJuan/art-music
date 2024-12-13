@@ -172,6 +172,27 @@ def partituras():
 
     return render_template('partituras.html', partituras=partituras)
 
+@app.route('/ver_pdf/<int:id>', methods=['GET'])
+def ver_pdf(id):
+    try:
+        response = supabase.table('partituras').select('pdf_data').eq('id', id).execute()
+        partitura = response.data[0] if response.data else None
+
+        if not partitura or not partitura.get('pdf_data'):
+            flash("PDF não encontrado.", "error")
+            return redirect(url_for('partituras'))
+
+        pdf_data = partitura['pdf_data']
+        return Response(
+            pdf_data,
+            mimetype='application/pdf',
+            headers={"Content-Disposition": "inline; filename=partitura.pdf"}
+        )
+    except Exception as e:
+        flash(f"Erro ao buscar o PDF: {str(e)}", "error")
+        return redirect(url_for('partituras'))
+
+
 @app.route('/adicionar_partitura', methods=['GET', 'POST'])
 def adicionar_partitura():
     if 'usuario_id' not in session:
@@ -188,36 +209,45 @@ def adicionar_partitura():
             flash("Quantidade deve ser um número válido.", "error")
             return redirect(url_for('adicionar_partitura'))
 
+        if 'pdf' not in request.files or request.files['pdf'].filename == '':
+            flash("Por favor, selecione um arquivo PDF.", "error")
+            return redirect(url_for('adicionar_partitura'))
+
+        pdf_file = request.files['pdf']
+
+        if pdf_file and pdf_file.filename.endswith('.pdf'):
+            try:
+                pdf_data = pdf_file.read()
+            except Exception as e:
+                flash(f"Erro ao ler o arquivo PDF: {str(e)}", "error")
+                return redirect(url_for('adicionar_partitura'))
+        else:
+            flash("Arquivo inválido. Apenas arquivos PDF são permitidos.", "error")
+            return redirect(url_for('adicionar_partitura'))
+
         dados_partitura = {
             'nome': nome,
             'descricao': descricao,
             'estilo_musical': estilo_musical,
             'quantidade': quantidade,
+            'pdf_data': pdf_data,
             'usuario_id': session['usuario_id']
         }
 
         try:
             response = supabase.table('partituras').insert([dados_partitura]).execute()
-            print("Supabase Insert Response:", response)
-
             if response.get('status_code') != 201:
                 flash(f"Erro ao adicionar partitura: {response.get('error', 'Erro desconhecido')}", "error")
                 return redirect(url_for('adicionar_partitura'))
 
             flash("Partitura adicionada com sucesso!", "success")
-            
-            response = supabase.table('partituras').select('*').eq('usuario_id', session['usuario_id']).execute()
-            partituras = response.data if response.data else []
-
-            return render_template('partituras.html', partituras=partituras)
-
+            return redirect(url_for('partituras'))
         except Exception as e:
-            print("Erro ao adicionar partitura:", str(e))
             flash(f"Erro ao adicionar partitura: {str(e)}", "error")
             return redirect(url_for('adicionar_partitura'))
 
     return render_template('adicionar_partitura.html')
-
+('adicionar_partitura.html')
 
 
 @app.route('/editar_partitura/<int:id>', methods=['GET', 'POST'])

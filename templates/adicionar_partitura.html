@@ -3,24 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/art_music.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/logins.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=home" />
     <title>Adicionar Partitura</title>
 </head>
 <body>
-    <h1>Adicionar Partitura</h1>
-    <form action="{{ url_for('adicionar_partitura') }}" method="POST">
-        <label for="nome">Nome:</label>
-        <input type="text" name="nome" required><br>
+    <div>
+        <button onclick="voltar()" class="voltar">
+            <span class="material-symbols-outlined">
+                arrow_back
+            </span>
+        </button>
+        <h1>Adicionar Partitura</h1>
+        <form action="{{ url_for('adicionar_partitura') }}" method="POST" enctype="multipart/form-data">
+            <label for="nome">Nome:</label>
+            <input type="text" name="nome" required><br>
+            <label for="descricao">Banda:</label>
+            <input type="text" name="descricao" required><br>
+            <label for="estilo_musical">Estilo Musical:</label>
+            <input type="text" name="estilo_musical" required><br>
+            <label for="quantidade">Quantidade:</label>
+            <input type="number" name="quantidade" value="0" required><br><br>
+            
+            <!-- Campo para upload do arquivo PDF -->
+            <label for="pdf">Arquivo PDF:</label>
+            <input type="file" name="pdf" accept=".pdf" required><br><br>
+            
+            <button type="submit" id="submit">Adicionar</button>
+        </form>
+    </div>
 
-        <label for="descricao">Banda:</label>
-        <input type="text" name="descricao" required><br>
-
-        <label for="estilo_musical">Estilo Musical:</label>
-        <input type="text" name="estilo_musical" required><br>
-
-        <label for="quantidade">Quantidade:</label>
-        <input type="number" name="quantidade" value="0" required><br>
-
-        <button type="submit">Adicionar</button>
-    </form>
+    <script>
+        function voltar() {
+            window.history.back();
+        }
+    </script>
 </body>
 </html>

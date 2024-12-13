@@ -3,24 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/art_music.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/logins.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=home" />
     <title>Editar Partitura</title>
 </head>
 <body>
-    <h1>Editar Partitura</h1>
-    <form action="{{ url_for('editar_partitura', id=partitura['id']) }}" method="POST">
-        <label for="nome">Nome:</label>
-        <input type="text" name="nome" value="{{ partitura['nome'] }}" required><br>
+    <div>
+        <button onclick="voltar()" class="voltar">
+            <span class="material-symbols-outlined">
+                arrow_back
+            <span>
+        </button>
+        <h1>Editar Partitura</h1>
+        <form action="{{ url_for('editar_partitura', id=partitura['id']) }}" method="POST">
+            <label for="nome">Nome:</label>
+            <input type="text" name="nome" value="{{ partitura['nome'] }}" required><br>
+            <label for="descricao">Banda</label>
+            <input type="text" name="descricao" value="{{ partitura['descricao'] }}" required><br>
+            <label for="estilo_musical">Estilo Musical:</label>
+            <input type="text" name="estilo_musical" value="{{ partitura['estilo_musical'] }}" required><br>
+            <label for="quantidade">Quantidade:</label>
+            <input type="number" name="quantidade" value="{{ partitura['quantidade'] }}" required><br><br>
+            <button type="submit" id="submit">Salvar Alterações</button>
+        </form>
+    </div>
 
-        <label for="descricao">Descrição:</label>
-        <input type="text" name="descricao" value="{{ partitura['descricao'] }}" required><br>
-
-        <label for="estilo_musical">Estilo Musical:</label>
-        <input type="text" name="estilo_musical" value="{{ partitura['estilo_musical'] }}" required><br>
-
-        <label for="quantidade">Quantidade:</label>
-        <input type="number" name="quantidade" value="{{ partitura['quantidade'] }}" required><br>
-
-        <button type="submit">Salvar Alterações</button>
-    </form>
+    <script>
+        function voltar() {
+            window.history.back();
+        }
+        </script>
 </body>
 </html>
